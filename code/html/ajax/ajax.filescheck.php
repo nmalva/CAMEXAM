@@ -44,17 +44,18 @@ if($payment_filename=="")
     $string.= "<li class='list-group-item'>
     Payment Receipt <span class='badge badge-default'> 0 </span>
     </li>";
-        
-if($dni_filename!="")
+
+//DNI eliminated v2.2
+/*if($dni_filename!="")
     $string.= "<li class='list-group-item'>
     <a href='{$path}{$dni_filename}'> DNI/Passport Scan </a> <span class='badge badge-success'> 1 </span>
     </li>";
-
+ 
 if($dni_filename=="")
     $string.= "<li class='list-group-item'>
     DNI/Passport Scan <span class='badge badge-default'> 0 </span>
     </li>";
-
+*/
 if($aci_filename!="")
     $string.= "<li class='list-group-item' style='display: {$display_exa_aci};' >
     <a href='{$path}{$aci_filename}'> Photo Consent Scan </a> <span class='badge badge-success'> 1 </span>

@@ -576,7 +576,7 @@ function getOptionPrepCentre($prc_id_user, $prc_id_candidate) //this is for chan
                 										</div>
                 									
                 									</div>
-                									<div class="form-group">
+                									<!-- <div class="form-group"> //DNI Eliminated v2.2
                 										<label class="control-label col-md-3">DNI/Passport Scan</label>
                 										<div class="col-md-9">
                 											<div class="fileinput fileinput-new" data-provides="fileinput">
@@ -598,7 +598,7 @@ function getOptionPrepCentre($prc_id_user, $prc_id_candidate) //this is for chan
                 										             <img alt="" src="../../assets/admin/layout3/img/loading-spinner-blue.gif">
                 										    </div>
                 										</div>
-                									</div>
+                									</div>  -->
                 									<div class="form-group" style="display: <?php if ($exa_aci==0) echo "none"; ?>;">
                 										<label class="control-label col-md-3">Photo Consent Scan</label>
                 										<div class="col-md-9">
