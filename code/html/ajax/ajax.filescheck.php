@@ -55,7 +55,7 @@ if($dni_filename=="")
     $string.= "<li class='list-group-item'>
     DNI/Passport Scan <span class='badge badge-default'> 0 </span>
     </li>";
-*/
+*///
 if($aci_filename!="")
     $string.= "<li class='list-group-item' style='display: {$display_exa_aci};' >
     <a href='{$path}{$aci_filename}'> Photo Consent Scan </a> <span class='badge badge-success'> 1 </span>
