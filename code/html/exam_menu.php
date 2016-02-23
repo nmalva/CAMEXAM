@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <!--<![endif]-->
-<!-- BEGIN HEAD -->
+<!-- BEGIN HEADD -->
 <head>
 <meta name="tipo_contenido"  content="text/html;" http-equiv="content-type" charset="utf-8">
 <!--  BEGIN INCLUDE CLASSES -->
