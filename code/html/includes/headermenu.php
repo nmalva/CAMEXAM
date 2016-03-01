@@ -55,7 +55,7 @@ $display_admin=(($session_use_usertype== 0 or $session_use_usertype== 1)  ? "inl
 													<h3>Preparation Centre</h3>
 												</li>
 												<li>
-													<a href="layout_fluid.html" class="iconify">
+													<a href="prepcentre_table.php" class="iconify">
 													<i class="glyphicon glyphicon-align-justify"></i>
 													List of Prep Centre </a>
 												</li>
