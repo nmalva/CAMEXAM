@@ -966,8 +966,8 @@ window.onload = function () {
               reload_filescheck(<?php echo $get_can_id;?>, <?php echo $exa_aci;?>);
               if (doc_type=="payment")
             	  hideLoadingPayment();
-              if (doc_type=="dni")
-            	  hideLoadingDni();
+             // if (doc_type=="dni")
+            //	  hideLoadingDni();
               if (doc_type=="aci")
             	  hideLoadingAci();
               if (doc_type=="disability")
@@ -1011,7 +1011,7 @@ if (xhr && window.File && window.FileList) { // it was added the numer to xhr_fi
           }
     }
     // xhr DNI
-    var xhr_file2 = null;
+  /*  var xhr_file2 = null;
     document.getElementById("xhr_field_dni").onchange = function () {
       xhr_file2 = this.files[0];
       xhr_parse(xhr_file2, "xhr_status_dni");
@@ -1025,7 +1025,7 @@ if (xhr && window.File && window.FileList) { // it was added the numer to xhr_fi
       }else{
   	     alert ("File format Incorrect!. It is only allowed pdf, jpg, jpeg, png, gif formats");
           }
-    }
+    }*/
     // xhr Aci
     var xhr_file3 = null;
     document.getElementById("xhr_field_aci").onchange = function () {
