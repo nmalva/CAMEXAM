@@ -6,7 +6,7 @@ ob_start();
 ?>
 <!-- 
 Template Name: Cambridge Exams
-Version: 22
+Version: 2.3
 Author: Nicolas Malvasio
 Website: http://www.warasolutions.com/
 Contact: nmalva@hotmail.com
