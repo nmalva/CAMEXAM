@@ -20,6 +20,7 @@
 $_SESSION["exa_id"]=$_GET["exa_id"]; //It is used in the form (to not use get)
 $get_exa_id=$_GET["exa_id"];
 $session_prc_id= $_SESSION["prc_id"];
+$get_year=$_GET["year"];
 ?>
 <!--  END GLOBAL VARIABLES -->
 
@@ -33,7 +34,7 @@ function getExaInfo($exa_id){
     $r=$class_bd->retornar_fila($resultado);   
 	echo "{$r["tye_name"]} Exam <small>( {$class_utiles->fecha_mysql_php($r["exa_date"])})</small>";	
 }
-function write_candidate($session_prc_id, $get_exa_id){
+function write_candidate($session_prc_id, $get_exa_id, $get_year){
     $class_bd=new bd();
     $class_utiles= new utiles();
     $folder="../../files/";
@@ -42,6 +43,7 @@ function write_candidate($session_prc_id, $get_exa_id){
                    INNER JOIN PrepCentre on Candidate.prc_id=PrepCentre.prc_id
                    INNER JOIN Exam on Exam.exa_id= Candidate.exa_id
                    INNER JOIN TypeExam on TypeExam.tye_id=Exam.tye_id
+                   WHERE Exam.exa_date >= '{$get_year}-01-01'
     
     ";
     $resultado=$class_bd->ejecutar($sql);
@@ -150,6 +152,7 @@ function write_candidate($session_prc_id, $get_exa_id){
 				<div class="page-title">
 					<h1>
                         <?php echo "Master Table";//getExaInfo($get_exa_id);?>
+                        		
 					</h1>
 				</div>
 				<!-- END PAGE TITLE -->
@@ -213,6 +216,23 @@ function write_candidate($session_prc_id, $get_exa_id){
         					<a href="exam_menu.php">Return</a>
         				</li>
         			</ul>
+        			<div class="btn-group">
+										<button type="button" class="btn btn-default"><?php echo $get_year;?></button>
+										<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true"><i class="fa fa-angle-down"></i></button>
+										<ul class="dropdown-menu" role="menu">
+											<li>
+												<a href="javascript:redireccionar('candidate_table_admin_general.php?year=2015');">
+												2015 </a>
+											</li>
+											<li>
+												<a href="javascript:redireccionar('candidate_table_admin_general.php?year=2016');">
+												2016 </a>
+											</li>
+										</ul>
+									</div>
+									<!-- /btn-group -->
+									<div class="btn-group dropup">
+				<div class="page-title">
 			<!-- END PAGE BREADCRUMB -->
 				<!-- BEGIN PAGE CONTENT INNER -->
 				<div class="row">
@@ -222,7 +242,8 @@ function write_candidate($session_prc_id, $get_exa_id){
 						<div class="portlet-title">
 							<div class="caption">
 								<i class="fa fa-cogs font-green-sharp"></i>
-								<span class="caption-subject font-green-sharp bold uppercase">Candidate Table</span>
+								<span class="caption-subject font-green-sharp bold uppercase">Candidate Table	
+								</span>
 							</div>
 							<div class="actions btn-set">
 								<div class="btn-group">
@@ -253,8 +274,7 @@ function write_candidate($session_prc_id, $get_exa_id){
 									</ul>
 								</div>
 							</div>
-						</div>
-								
+						</div>		
 							<div class="portlet-body">
 								<table class="table table-striped table-bordered table-hover"
 									id="sample_4">
@@ -277,7 +297,7 @@ function write_candidate($session_prc_id, $get_exa_id){
 									</thead>
 									<tbody>
 							<?php 
-							    write_candidate($session_prc_id, $get_exa_id);	
+							    write_candidate($session_prc_id, $get_exa_id, $get_year);	
 							
 							?>
 							</tbody>
