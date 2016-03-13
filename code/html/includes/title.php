@@ -6,11 +6,11 @@ ob_start();
 ?>
 <!-- 
 Template Name: Cambridge Exams
-Version: 2.3
+Version: 2.4
 Author: Nicolas Malvasio
 Website: http://www.warasolutions.com/
 Contact: nmalva@hotmail.com
 -->
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
-<!--[if !IE]><!-->a
+<!--[if !IE]><!-->
