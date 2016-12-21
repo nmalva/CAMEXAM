@@ -5,18 +5,19 @@ ob_start();
 include_once ("../classes/class.candidate.php");
 include_once ("../classes/class.utiles.php");
 
+
 $session_use_usertype=$_SESSION["use_usertype"];
 
 $class_utiles=new utiles();
 
 $campos["can_id"]= $_POST["can_id"];
 $campos["can_dni"]=$_POST["can_dni"];
-$campos["can_firstname"]=$_POST["can_firstname"];
-$campos["can_lastname"]=$_POST["can_lastname"];
+$campos["can_firstname"]=addslashes($_POST["can_firstname"]);
+$campos["can_lastname"]=addslashes($_POST["can_lastname"]);
 $campos["can_gender"]=$_POST["can_gender"];
 $campos["can_datebirth"]=$class_utiles->fecha_php_mysql($_POST["can_datebirth"]);
 $campos["can_email"]=$_POST["can_email"];
-$campos["can_adress"]=$_POST["can_adress"];
+$campos["can_adress"]=addslashes($_POST["can_adress"]);
 $campos["can_telephone"]=$_POST["can_telephone"];
 $campos["can_cellphone"]=$_POST["can_cellphone"];
 $campos["can_visa"]=$_POST["can_visa"];
@@ -84,7 +85,7 @@ function insertUpdate($campos, $session_use_usertype){
     if ($campos["can_id"]==""){
         if (checkdni($campos)=="false"){
             $id=insert();
-            if ($session_use_usertype<2) {//it is admin or internal to get the candidates in workflow
+            if ($session_use_usertype<2 and $session_use_usertype!=NULL) {//it is admin or internal to get the candidates in workflow // The null its add because widthout session the status was setted to sent
                 $class_candidate= new Candidate($id);
                 $class_candidate->setCan_status(1);
             }   

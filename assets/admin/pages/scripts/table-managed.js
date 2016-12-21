@@ -32,19 +32,33 @@ var TableManaged = function () {
             "columns": [{
                 "orderable": false
             }, {
-                "orderable": true
+                "orderable": false
+            }, {
+                "orderable": false
             }, {
                 "orderable": false
             }, {
                 "orderable": false
             }, {
-                "orderable": true
+                "orderable": false
+            }, {
+                "orderable": false
+            }, {
+                "orderable": false
+            }, {
+                "orderable": false
+            }, {
+                "orderable": false
+            }, {
+                "orderable": false
+            }, {
+                "orderable": false
             }, {
                 "orderable": false
             }],
             "lengthMenu": [
-                [5, 15, 20, -1],
-                [5, 15, 20, "All"] // change per page values here
+                [7, 25, 50, -1],
+                [7, 25, 50, "All"] // change per page values here
             ],
             // set the initial value
             "pageLength": 5,            

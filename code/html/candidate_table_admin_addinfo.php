@@ -38,6 +38,7 @@ function write_candidate($session_prc_id, $get_exa_id){
     $sql="SELECT * FROM Candidate 
                    INNER JOIN ExamPlace on Candidate.exp_id=ExamPlace.exp_id
                    INNER JOIN PrepCentre on Candidate.prc_id=PrepCentre.prc_id
+                   LEFT OUTER JOIN ExamPlaceAula on Candidate.epa_id=ExamPlaceAula.epa_id
                    WHERE exa_id={$get_exa_id}";
     $resultado=$class_bd->ejecutar($sql);
     $i=1;
@@ -67,21 +68,36 @@ function write_candidate($session_prc_id, $get_exa_id){
         else
             $can_disability="Yes";
          
-        $line="<tr>";
-     
+        $line="<tr class='odd gradeX'>"; 
+        $line.="<td> <input type='checkbox' name='check' id='{$r["can_id"]}' class='checkboxes' value='{$r["can_id"]}'/></td>";
         $line.="<td style='color:{$color};'>{$r["can_id"]}</td>";
         $line.="<td style='color:{$color};'>{$r["can_firstname"]}</td>";
         $line.="<td style='color:{$color};'>{$r["can_lastname"]}</td>";
-        $line.="<td style='color:{$color};'>{$r["can_dni"]}</td>";
         $line.="<td style='color:{$color};'>{$r["exp_name"]}</td>";
-        $line.="<td style='color:{$color};'>{$r["prc_name"]}</td>";
+       // $line.="<td style='color:{$color};'>{$r["prc_name"]}</td>";
         $line.="<td style='color:{$color};'><input type='text' onfocusout='updateCandidateNum({$r["can_id"]},this.value);' value='{$r["can_candidatenum"]}'></td>";
-        $line.="<td style='color:{$color};'><input type='text' onfocusout='updatePackingCode({$r["can_id"]},this.value);' value='{$r["can_packingcode"]}'></td>";
+        $line.="<td style='color:{$color};'><input type='text' onfocusout='updatePackingCode({$r["can_id"]},this.value);' value='{$r["epa_packingcode"]}'></td>";
+        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timelistening"]}'></td>";
+        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timespeaking"]}'></td>";
+        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timewriting"]}'></td>";
+        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timereading"]}'></td>";
+        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timereadingandwriting"]}'></td>";
+        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timereadinganduseofenglish"]}'></td>";
         $line.="</tr>";
          
          echo $line;
       }		
       
+    }
+    
+ function getOption()
+    {
+        $class_bd = new bd();
+        $sql = "SELECT * FROM ExamPlaceAula INNER JOIN ExamPlace on ExamPlaceAula.exp_id=ExamPlace.exp_id ORDER BY ExamPlace.exp_name ASC";
+        $resultado = $class_bd->ejecutar($sql);
+        while ($r = $class_bd->retornar_fila($resultado)) {
+          echo "<option value='{$r["epa_id"]}'>{$r["exp_name"]}-{$r["epa_packingcode"]} </option>";
+        }
     }
 ?>
 <head>
@@ -104,10 +120,8 @@ function write_candidate($session_prc_id, $get_exa_id){
 	href="../../assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css" />
 <link rel="stylesheet" type="text/css"
 	href="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" />
-<!-- END PAGE LEVEL STYLES -->
 
-<link rel="stylesheet" type="text/css"
-	href="../../assets/global/plugins/icheck/skins/all.css" /> <!-- links for the checkbox -->
+<!-- END PAGE LEVEL STYLES -->
 
 
 <!-- BEGIN THEME STYLES -->
@@ -212,63 +226,78 @@ function write_candidate($session_prc_id, $get_exa_id){
 						<div class="portlet-title">
 							<div class="caption">
 								<i class="fa fa-cogs font-green-sharp"></i>
-								<span class="caption-subject font-green-sharp bold uppercase">Candidate Table</span>
-							</div>
-							<div class="actions btn-set">
-								<div class="btn-group">
-									<a class="btn green-haze btn-circle" href="javascript:;" data-toggle="dropdown">
-									<!--<i class="fa fa-check-circle"></i>-->
-									 Columns <i class="fa fa-angle-down"></i>
-									</a>
-									<ul class="dropdown-menu pull-right hold-on-click" id="sample_4_column_toggler">
-										
-										<li>
-											<label><input type="checkbox" checked data-column="1">First Name</label>
-										</li>
-										<li>
-											<label><input type="checkbox" checked data-column="2">Last Name</label>
-										</li>
-										<li>
-											<label><input type="checkbox" checked data-column="3">Dni</label>
-										</li>
-										<li>
-											<label><input type="checkbox" checked data-column="4">Gender</label>
-										</li>
-										<li>
-											<label><input type="checkbox" checked data-column="5">Date of Birth</label>
-										</li>
-										<li>
-											<label><input type="checkbox" checked data-column="6">Email</label>
-										</li>
-									    <li>
-											<label><input type="checkbox" checked data-column="7">Adress</label>
-										</li>
-									</ul>
-								</div>
+								<span class="caption-subject font-green-sharp bold uppercase" onclick="chequear();">Candidate Table</span>
 							</div>
 						</div>
 								
 							<div class="portlet-body">
-								<table class="table table-striped table-bordered table-hover"
-									id="sample_6">
+
+						          <form action="" class="form-horizontal" accept-charset="UTF-8">
+						              Candidate #<input type="text" id='init_value' name='init_value'><input type="button" value="SET" onclick="set_candidate();"> 
+						              Paking code #
+						              <select class="" name="epa_id" id="epa_id" data-placeholder="Choose a Category" tabindex="1">
+										<?php  getOption();?>
+									  </select> 
+						              <input type="button" value="SET" onclick="set_packingcode();"> 
+						              <br/><br/>
+						              L<input type="time" id='can_timelistening' name='can_timelistening'>
+						              W<input type="time" id='can_timewriting' name='can_timewriting'>
+						              R<input type="time" id='can_timereading' name='can_timereading'>
+						              R&W<input type="time" id='can_timereadingandwriting' name='can_timereadingandwriting'>
+						              R&E<input type="time" id='can_timereadinganduseofe' name='can_timereadinganduseofe'> 
+						              <input type="button" value="SET" onclick="set_cantimevarious();"> 
+						              ||
+						              Start<input type="time" id='time_start_speaking' name='time_start_speaking'>
+						              interval<input type="text" id='time_interval' name='time_interval'>
+						              group<input type="text" id='time_group' name='time_group'>
+						              <input type="button" value="SET" onclick="set_cantimespeaking();"> 
+						              
+						          </form>	
+								
+							</div>
+						</div>
+						<!-- END EXAMPLE TABLE PORTLET-->
+					
+						<!-- BEGIN EXAMPLE TABLE PORTLET-->
+					<div class="portlet light bordered">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-cogs font-green-sharp"></i>
+								<span class="caption-subject font-green-sharp bold uppercase" onclick="chequear();">Candidate Table</span>
+							</div>
+						</div>
+								
+							<div class="portlet-body">
+							<table class="table table-striped table-bordered table-hover" id="sample_1">
 									<thead>
 										<tr>
+										    <th class="table-checkbox">
+									            <input type="checkbox" class="group-checkable" name="check" ide='check' data-set="#sample_1 .checkboxes"/>
+							             	</th>
 											<th>ID</th>
-											<th>First Name</th>
+										    <th>First Name</th>
 											<th>Last Name</th>
-											<th>DNI</th>
 											<th>Venue</th>
-											<th>Prep. Centre</th>
+										   <!--  <th>Prep. Centre</th>  --> 	
 											<th>Candidate #</th>
 											<th>Packing Code</th>
+											<th>Time Listening</th>
+											<th>Time Speaking</th>
+											<th>Time Writing</th>
+											<th>Time Reading</th>
+											<th>Time Reading and Writing</th>
+											<th>Time Reading and Use of English</th>
+										
 										</tr>
 									</thead>
-									<tbody>
+							<tbody>
 							<?php 
 							    write_candidate($session_prc_id, $get_exa_id);							
 							?>
 							</tbody>
-								</table>
+						    </table>
+											
+								
 							</div>
 						</div>
 						<!-- END EXAMPLE TABLE PORTLET-->
@@ -327,16 +356,16 @@ function write_candidate($session_prc_id, $get_exa_id){
 	type="text/javascript"></script>
 <script src="../../assets/admin/layout3/scripts/demo.js"
 	type="text/javascript"></script>
-<script src="../../assets/admin/pages/scripts/table-advanced.js"></script>
-<script src="../../assets/global/plugins/icheck/icheck.min.js"></script>
+	<script src="../../assets/global/plugins/icheck/icheck.min.js"></script>
+<script src="../../assets/admin/pages/scripts/table-managed.js"></script>
 
 <script>
 jQuery(document).ready(function() {       
-   Metronic.init(); // init metronic core components
-   Layout.init(); // init current layout
-   Demo.init(); // init demo features
-   TableAdvanced.init();
-});
+	   Metronic.init(); // init metronic core components
+		Layout.init(); // init current layout
+		Demo.init(); // init demo features
+	    TableManaged.init();
+	});
 
 //--START JAVASCRIPT FUNCTIONS--
 function redirect(can_id){
@@ -397,8 +426,106 @@ function showUpdateCheck(){
 function hideUpdateCheck(){
     this.document.getElementById("update_check").style.display = 'none';
     }
+    
+function set_candidate(){
+	var ids;
+	var init_value;
+	var set;
+	
+    ids = $('input[type=checkbox]:checked').map(function() {
+  	    return $(this).attr('id');
+   	   }).get();
+    init_value= this.document.getElementById("init_value").value
+    set="set_candidate";
+    // alert('IDS: ' + ids.join(', '));
 
+     $.ajax({
+        url:"../abm/abm.candidate_parameters.php",
+        type: "POST",
+        data:{ids:ids, init_value:init_value, set:set},
+        success: function(opciones){ 
+            alert(init_value);
+          }
+       });
 
+}
+
+function set_packingcode(){
+	var ids;
+	var epa_id;
+	var set;
+    ids = $('input[type=checkbox]:checked').map(function() {
+  	    return $(this).attr('id');
+   	   }).get();  
+    epa_id= this.document.getElementById("epa_id").value        
+    set="set_packingcode";
+    // alert('IDS: ' + ids.join(', '));
+
+     $.ajax({
+        url:"../abm/abm.candidate_parameters.php",
+        type: "POST",
+        data:{ids:ids, epa_id:epa_id, set:set},
+        success: function(opciones){ 
+            alert(opciones);
+          }
+       });
+}
+
+function set_cantimespeaking(){
+	var ids;
+	var time_interval;
+	var time_start_speaking;
+	var time_group;
+	var set;
+    ids = $('input[type=checkbox]:checked').map(function() {
+  	    return $(this).attr('id');
+   	   }).get();  
+    time_interval= this.document.getElementById("time_interval").value  
+    time_start_speaking= this.document.getElementById("time_start_speaking").value
+    time_group= this.document.getElementById("time_group").value        
+    set="set_timespeaking";
+    // alert('IDS: ' + ids.join(', '));
+
+     $.ajax({
+        url:"../abm/abm.candidate_parameters.php",
+        type: "POST",
+        data:{ids:ids, time_interval:time_interval, time_start_speaking:time_start_speaking, time_group:time_group,set:set},
+        success: function(opciones){ 
+            alert(opciones);
+          }
+       });
+}
+
+function set_cantimevarious(){
+	var ids;
+	var can_timelistening;
+	var can_timewriting;
+	var can_timereading;
+	var can_timereadingandwriting;
+	var can_timereadinganduseofe;
+	
+	var set;
+    ids = $('input[type=checkbox]:checked').map(function() {
+  	    return $(this).attr('id');
+   	   }).get();  
+    can_timelistening= this.document.getElementById("can_timelistening").value
+    can_timewriting= this.document.getElementById("can_timewriting").value
+    can_timereading= this.document.getElementById("can_timereading").value
+    can_timereadingandwriting= this.document.getElementById("can_timereadingandwriting").value
+    can_timereadinganduseofe= this.document.getElementById("can_timereadinganduseofe").value         
+    set="set_timevarious";
+    // alert('IDS: ' + ids.join(', '));
+
+     $.ajax({
+        url:"../abm/abm.candidate_parameters.php",
+        type: "POST",
+        data:{ids:ids, can_timelistening:can_timelistening, can_timewriting:can_timewriting, can_timereading:can_timereading,
+              can_timereadingandwriting:can_timereadingandwriting, can_timereadinganduseofe:can_timereadinganduseofe, set:set},
+        success: function(opciones){ 
+            alert(opciones);
+          }
+       });
+}
 //--END JAVASCRIPT FUNCTIONS--
 </script>
 

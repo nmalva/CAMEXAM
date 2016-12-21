@@ -103,7 +103,7 @@ $sql = "SELECT * FROM Candidate
         INNER JOIN PrepCentre ON Candidate.prc_id=PrepCentre.prc_id
         INNER JOIN ExamPlace ON Candidate.exp_id=ExamPlace.exp_id
         WHERE exa_id='{$get_exa_id}' AND can_status='2'
-        ORDER BY ExamPlace.exp_name, PrepCentre.prc_name, Candidate.can_lastname"; // can_status=1 --> confirmed
+        ORDER BY can_candidatenum ASC, ExamPlace.exp_name ASC, PrepCentre.prc_name ASC, Candidate.can_lastname ASC"; // can_status=1 --> confirmed
 $resultado=$class_bd->ejecutar($sql);
 $i=2;
 while ($line = $class_bd->retornar_fila($resultado)){

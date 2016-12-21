@@ -39,10 +39,18 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 				$this->can_dnifile=$r["can_dnifile"];
 				$this->can_acifile=$r["can_acifile"];
 				$this->can_disabilityfile=$r["can_disabilityfile"];
-				$this->can_packingcode=$r["can_packingcode"];
+				$this->epa_id=$r["epa_id"];
 				$this->can_status=$r["can_status"];
 				$this->can_comment=$r["can_comment"];
 				$this->can_commentadmin=$r["can_commentadmin"];
+				$this->can_timelistening=$r["can_timelistening"];
+				$this->can_timespeaking=$r["can_timespeaking"];
+				$this->can_timewriting=$r["can_timewriting"];
+				$this->can_timereading=$r["can_timereading"];
+				$this->can_timereadingandwriting=$r["can_timereadingandwriting"];
+				$this->can_timereadinganduseofenglish=$r["can_timereadinganduseofenglish"];
+				
+
 	
         
       }
@@ -69,7 +77,7 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 	function getCan_candidatetype(){return $this->can_candidatetype;}
 	function getPrc_id(){return $this->prc_id;}
 	function getCan_candidatenum(){return $this->can_candidatenum;}
-	function getCan_packingcode(){return $this->can_packingcode;}
+	function getEpa_id(){return $this->epa_id;}
 	function getCan_paymentfile(){return $this->can_paymentfile;}
 	function getCan_dnifile(){return $this->can_dnifile;}
 	function getCan_acifile(){return $this->can_acifile;}
@@ -77,6 +85,12 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 	function getCan_status(){return $this->can_status;}
 	function getCan_comment(){return $this->can_comment;}
 	function getCan_commentadmin(){return $this->can_commentadmin;}
+	function getCan_timelistening(){return $this->can_timelistening;}
+	function getCan_timespeaking(){return $this->can_timespeaking;}
+	function getCan_timewriting(){return $this->can_timewriting;}
+	function getCan_timereading(){return $this->can_timereading;}
+	function getCan_timereadingandwriting(){return $this->can_timereadingandwriting;}
+	function getCan_timereadinganduseofenglish(){return $this->can_timereadinganduseofenglish;}
 	function getCan_timestamp(){return $this->can_timestamp;}
 
 
@@ -156,8 +170,8 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 	$sql="UPDATE Candidate SET can_candidatenum= '{$value}' WHERE can_id={$this->can_id}";
 	$this-> ejecutar($sql);
 	}
-	function setCan_packingcode($value){
-	$sql="UPDATE Candidate SET can_packingcode= '{$value}' WHERE can_id={$this->can_id}";
+	function setEpa_id($value){
+	$sql="UPDATE Candidate SET epa_id= '{$value}' WHERE can_id={$this->can_id}";
 	$this-> ejecutar($sql);
 	}
 	function setCan_paymentfile($value){
@@ -188,15 +202,39 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 	    $sql="UPDATE Candidate SET can_commentadmin= '{$value}'  WHERE can_id={$this->can_id}";
 	    $this-> ejecutar($sql);
 	}
+	function setCan_timelistening($value){
+	    $sql="UPDATE Candidate SET can_timelistening= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
+	function setCan_timespeaking($value){
+	    $sql="UPDATE Candidate SET can_timespeaking= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
+	function setCan_timewriting($value){
+	    $sql="UPDATE Candidate SET can_timewriting= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
+	function setCan_timereading($value){
+	    $sql="UPDATE Candidate SET can_timereading= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
+	function setCan_timereadingandwriting($value){
+	    $sql="UPDATE Candidate SET can_timereadingandwriting= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
+	function setCan_timereadinganduseofenglish($value){
+	    $sql="UPDATE Candidate SET can_timereadinganduseofenglish= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
 
 //-----------------Insert---------------
 
-	function insert($can_dni,$can_firstname,$can_lastname,$can_gender,$can_datebirth,$can_email,$can_adress,$can_telephone,$can_cellphone,$can_visa,$can_disability,$can_disabilitycom,$exp_id,$exa_id,$can_candidatetype,$prc_id,$can_candidatenum,$can_packingcode){
+	function insert($can_dni,$can_firstname,$can_lastname,$can_gender,$can_datebirth,$can_email,$can_adress,$can_telephone,$can_cellphone,$can_visa,$can_disability,$can_disabilitycom,$exp_id,$exa_id,$can_candidatetype,$prc_id,$can_candidatenum,$epa_id){
 	
 	$sql="INSERT INTO Candidate 			
-			(can_dni,can_firstname,can_lastname,can_gender,can_datebirth,can_email,can_adress,can_telephone,can_cellphone,can_visa,can_disability,can_disabilitycom,exp_id,exa_id,can_candidatetype,prc_id,can_candidatenum,can_packingcode) 
+			(can_dni,can_firstname,can_lastname,can_gender,can_datebirth,can_email,can_adress,can_telephone,can_cellphone,can_visa,can_disability,can_disabilitycom,exp_id,exa_id,can_candidatetype,prc_id,can_candidatenum,epa_id) 
 		
-	VALUES ( '{$can_dni}','{$can_firstname}','{$can_lastname}','{$can_gender}','{$can_datebirth}','{$can_email}','{$can_adress}','{$can_telephone}','{$can_cellphone}', '{$can_visa}', '{$can_disability}','{$can_disabilitycom}', '{$exp_id}','{$exa_id}', '{$can_candidatetype}', '{$prc_id}', '{$can_candidatenum}', '{$can_packingcode}')";
+	VALUES ( '{$can_dni}','{$can_firstname}','{$can_lastname}','{$can_gender}','{$can_datebirth}','{$can_email}','{$can_adress}','{$can_telephone}','{$can_cellphone}', '{$can_visa}', '{$can_disability}','{$can_disabilitycom}', '{$exp_id}','{$exa_id}', '{$can_candidatetype}', '{$prc_id}', '{$can_candidatenum}', '{$epa_id}')";
 		
 		return($this->ejecutar($sql));
 	}
