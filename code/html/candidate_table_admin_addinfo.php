@@ -120,7 +120,10 @@ function write_candidate($session_prc_id, $get_exa_id){
 	href="../../assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css" />
 <link rel="stylesheet" type="text/css"
 	href="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" />
-
+<link rel="stylesheet" type="text/css" href="../../assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css"/>
+	
+	
+	
 <!-- END PAGE LEVEL STYLES -->
 
 
@@ -217,45 +220,209 @@ function write_candidate($session_prc_id, $get_exa_id){
         					<a href="candidate_table_admin.php?exa_id=<?php echo $get_exa_id;?>">Return</a>
         				</li>
         			</ul>
+        			
+        			
+        			
+        			
+        		<div class="row">
+        		
+				<div class="col-md-4 ">
+					<!-- BEGIN SAMPLE FORM PORTLET-->
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-cogs font-green-sharp"></i>
+								<span class="caption-subject font-green-sharp bold uppercase">SET PARAMETERS</span>
+							</div>
+							<div class="tools">
+								<a href="javascript:;" class="collapse">
+								</a>
+								<a href="#portlet-config" data-toggle="modal" class="config">
+								</a>
+								<a href="javascript:;" class="reload">
+								</a>
+								<a href="javascript:;" class="remove">
+								</a>
+							</div>
+						</div>
+						<div class="portlet-body form">
+							<form role="form">
+								<div class="form-body">			
+									<div class="form-group">
+										
+										<div class="input-group">
+											<div class="input-icon">
+        										    <select name="epa_id" id="epa_id" data-placeholder="Select Packing Code" class="form-control">
+        										      <?php  getOption();?>
+        											</select>        											
+											</div>
+											<span class="input-group-btn">
+    									       <button id="genpassword" class="btn btn-success" type="button" onclick="set_packingcode();"><i class="fa fa-arrow-left fa-fw"/></i> Set</button>
+    									    </span>
+											
+										</div>
+									</div>		 
+            			             <div class="form-group">
+                			             <div class="input-group">
+        									
+        									<input id="init_value" class="form-control" type="text" name="init_value" placeholder="Start number - Candidate # Init" />
+        									
+        									<span class="input-group-btn">
+        									<button id="genpassword" class="btn btn-success" type="button" onclick="set_candidate();"><i class="fa fa-arrow-left fa-fw"/></i> Set</button>
+        									</span>
+        								</div>
+                                    </div>
+        			          </div> 
+        			         </form>
+        			     </div>
+        			   </div>
+                    </div>
+                    
+                    
+                    		
+                    
+                    
+                    <div class="col-md-8 ">
+					<!-- BEGIN SAMPLE FORM PORTLET-->
+					<div class="portlet light">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-cogs font-green-sharp"></i>
+								<span class="caption-subject font-green-sharp bold uppercase">SET TIME</span>
+							</div>
+							<div class="tools">
+								<a href="javascript:;" class="collapse">
+								</a>
+								<a href="#portlet-config" data-toggle="modal" class="config">
+								</a>
+								<a href="javascript:;" class="reload">
+								</a>
+								<a href="javascript:;" class="remove">
+								</a>
+							</div>
+						</div>
+						
+						<div class="portlet-body form">
+							<form role="form">
+								<div class="form-body">	
+								    <div class="row">		
+    								 <div class="form-group">
+    										<label class="control-label col-md-1">L</label>
+    										<div class="col-md-3">
+    											<div class="input-group">
+    												<input type="text" class="form-control timepicker timepicker-24" id='can_timelistening' name='can_timelistening'>
+    												<span class="input-group-btn">
+    												<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+    												</span>
+    											</div>
+    										</div>
+    										<label class="control-label col-md-1">W</label>
+    										<div class="col-md-3">
+    											<div class="input-group">
+    												<input type="text" class="form-control timepicker timepicker-24" id='can_timewriting' name='can_timewriting'>
+    												<span class="input-group-btn">
+    												<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+    												</span>
+    											</div>
+    										</div>
+    										<label class="control-label col-md-1">R</label>
+    										<div class="col-md-3">
+    											<div class="input-group">
+    												<input type="text" class="form-control timepicker timepicker-24" id='can_timereading' name='can_timereading'>
+    												<span class="input-group-btn">
+    												<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+    												</span>
+    											</div>
+    										</div>
+    								   </div>
+    								 </div>
+    								  <span><br/></span>
+    								 <div class="row">		
+        								 <div class="form-group">
+        										<label class="control-label col-md-1">R&W</label>
+        										<div class="col-md-3">
+        											<div class="input-group">
+        												<input type="text" class="form-control timepicker timepicker-24" id='can_timereadingandwriting' name='can_timereadingandwriting'>
+        												<span class="input-group-btn">
+        												<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+        												</span>
+        											</div>
+        										</div>
+        										<label class="control-label col-md-1">R&E</label>
+        										<div class="col-md-3">
+        											<div class="input-group">
+        												<input type="text" class="form-control timepicker timepicker-24" id='can_timereadinganduseofe' name='can_timereadinganduseofe'>
+        												<span class="input-group-btn">
+        												<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+        												</span>
+        											</div>
+        										</div>
+        										<label class="control-label col-md-1"> </label>
+        										<div class="col-md-3">
+        											<div class="input-group">
+        												<input type="text" class="form-control">
+        												<span class="input-group-btn">
+        												<button id="genpassword" class="btn btn-success" type="button"  onclick="set_cantimevarious();"><i class="fa fa-arrow-left fa-fw"/></i> Set</button>
+        												</span>
+        											</div>
+        										</div>
+        								   </div>
+    								  </div>
+    								 <span><br/><br/><br/></span>
+    								 
+    								 
+    								 
+    						
+    								 
+    								 
+    								 <div class="row">	
+    									
+        								 <div class="form-group">
+        										<label class="control-label col-md-1">Start</label>
+        										<div class="col-md-3">
+        											<div class="input-group">
+        												<input type="text" class="form-control timepicker timepicker-24" id='time_start_speaking' name='time_start_speaking'>
+        												<span class="input-group-btn">
+        												<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
+        												</span>
+        											</div>
+        										</div>
+        										<label class="control-label col-md-1">Inter.</label>
+        										<div class="col-md-3">
+        											<div class="input-group">
+        												<input type="text" class="form-control" id='time_interval' name='time_interval'>
+        											</div>
+        										</div>
+        										<label class="control-label col-md-1">Group </label>
+        										<div class="col-md-3">
+        											<div class="input-group">
+        												<input type="text" class="form-control" id='time_group' name='time_group'>
+        												<span class="input-group-btn">
+        												<button id="genpassword" class="btn btn-success" type="button" onclick="set_cantimespeaking();"><i class="fa fa-arrow-left fa-fw"/></i> Set</button>
+        												</span>
+        											</div>
+        										</div>
+        								   </div>
+    								  </div>
+    								  
+        			             </div>  			             
+        			         </form>
+        			     </div>
+        			   </div>
+                    </div>
+                    
+        
+                  
+   
+                    </div>
+                    
+        			
 			<!-- END PAGE BREADCRUMB -->
 				<!-- BEGIN PAGE CONTENT INNER -->
 				<div class="row">
 					<div class="col-md-12">
 						<!-- BEGIN EXAMPLE TABLE PORTLET-->
-					<div class="portlet light bordered">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-cogs font-green-sharp"></i>
-								<span class="caption-subject font-green-sharp bold uppercase" onclick="chequear();">Candidate Table</span>
-							</div>
-						</div>
-								
-							<div class="portlet-body">
-
-						          <form action="" class="form-horizontal" accept-charset="UTF-8">
-						              Candidate #<input type="text" id='init_value' name='init_value'><input type="button" value="SET" onclick="set_candidate();"> 
-						              Paking code #
-						              <select class="" name="epa_id" id="epa_id" data-placeholder="Choose a Category" tabindex="1">
-										<?php  getOption();?>
-									  </select> 
-						              <input type="button" value="SET" onclick="set_packingcode();"> 
-						              <br/><br/>
-						              L<input type="time" id='can_timelistening' name='can_timelistening'>
-						              W<input type="time" id='can_timewriting' name='can_timewriting'>
-						              R<input type="time" id='can_timereading' name='can_timereading'>
-						              R&W<input type="time" id='can_timereadingandwriting' name='can_timereadingandwriting'>
-						              R&E<input type="time" id='can_timereadinganduseofe' name='can_timereadinganduseofe'> 
-						              <input type="button" value="SET" onclick="set_cantimevarious();"> 
-						              ||
-						              Start<input type="time" id='time_start_speaking' name='time_start_speaking'>
-						              interval<input type="text" id='time_interval' name='time_interval'>
-						              group<input type="text" id='time_group' name='time_group'>
-						              <input type="button" value="SET" onclick="set_cantimespeaking();"> 
-						              
-						          </form>	
-								
-							</div>
-						</div>
+					
 						<!-- END EXAMPLE TABLE PORTLET-->
 					
 						<!-- BEGIN EXAMPLE TABLE PORTLET-->
@@ -347,6 +514,11 @@ function write_candidate($session_prc_id, $get_exa_id){
 	src="../../assets/global/plugins/datatables/extensions/Scroller/js/dataTables.scroller.min.js"></script>
 <script type="text/javascript"
 	src="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
+	
+	
+
+<script type="text/javascript" src="../../assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
+
 <!-- END PAGE LEVEL PLUGINS -->
 
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
@@ -359,12 +531,16 @@ function write_candidate($session_prc_id, $get_exa_id){
 	<script src="../../assets/global/plugins/icheck/icheck.min.js"></script>
 <script src="../../assets/admin/pages/scripts/table-managed.js"></script>
 
+<script src="../../assets/admin/pages/scripts/components-pickers.js"></script>
+
+
 <script>
 jQuery(document).ready(function() {       
 	   Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		Demo.init(); // init demo features
 	    TableManaged.init();
+	    ComponentsPickers.init();
 	});
 
 //--START JAVASCRIPT FUNCTIONS--
@@ -454,11 +630,14 @@ function set_packingcode(){
 	var ids;
 	var epa_id;
 	var set;
+	
     ids = $('input[type=checkbox]:checked').map(function() {
   	    return $(this).attr('id');
    	   }).get();  
     epa_id= this.document.getElementById("epa_id").value        
     set="set_packingcode";
+    
+    
     // alert('IDS: ' + ids.join(', '));
 
      $.ajax({

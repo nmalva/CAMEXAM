@@ -25,7 +25,7 @@ if (is_numeric($r["use_id"])) {
     $nombre = $_POST["usuario"];
     unset($_SESSION["use_id"], $_SESSION["use_name"], 
         $_SESSION["use_lastname"], $_SESSION["use_usertype"], 
-        $_SESSION["prc_id"], $_SESSION["prc_name"]); // esto borra lo que tiene "idusuario y nombre" de SESSION, es decir borro la sesión
+        $_SESSION["prc_id"], $_SESSION["prc_name"]); // esto borra lo que tiene "idusuario y nombre" de SESSION, es decir borro la sesiï¿½n
     $url = "login_form.php?error=1&nombre=" . $nombre;
 }
 
