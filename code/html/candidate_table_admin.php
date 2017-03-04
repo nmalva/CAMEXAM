@@ -80,22 +80,22 @@ function write_candidate($session_prc_id, $get_exa_id){
          $path_aci=$folder.$r["can_acifile"];
          $path_disability=$folder.$r["can_disabilityfile"];
          
-         $table="<tr onclick=redirect({$r["can_id"]}); style='cursor:pointer; '>";
-         $table.="<td style='color:{$color};'>{$r["can_id"]}</td>";
-         $table.="<td style='color:{$color};'>{$r["can_firstname"]}</td>";
-         $table.="<td style='color:{$color};'>{$r["can_lastname"]}</td>";
-         $table.="<td style='color:{$color};'>{$r["can_dni"]}</td>";
-         $table.="<td style='color:{$color};'>{$can_gender}</td>";
-         $table.="<td style='color:{$color};'>".$class_utiles->fecha_mysql_php($r["can_datebirth"])."</td>";
-         $table.="<td style='color:{$color};'>{$r["can_email"]}</td>";
-         $table.="<td style='color:{$color};'>{$r["exp_name"]}</td>";
-         $table.="<td style='color:{$color};'>{$r["prc_name"]}</td>";
+         $table="<tr>";
+         $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$r["can_id"]}</td>";
+         $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$r["can_firstname"]}</td>";
+         $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$r["can_lastname"]}</td>";
+         $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$r["can_dni"]}</td>";
+         $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$can_gender}</td>";
+         $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>".$class_utiles->fecha_mysql_php($r["can_datebirth"])."</td>";
+         $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$r["can_email"]}</td>";
+         $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$r["exp_name"]}</td>";
+         $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$r["prc_name"]}</td>";
          $table.="<td style='color:{$color};' align='center'>{$can_visa}</td>";
          $table.="<td style='color:{$color};' align='center'>{$can_disability}</td>";
-         $table.="<td style='color:{$color};' align='center'><a href='{$path_payment}' style='color:{$color}'>{$can_paymentfile}</a></td>";
-         $table.="<td style='color:{$color};' align='center'><a href='a{$path_dni}' style='color:{$color}'>{$can_dnifile}</a></td>";
-         $table.="<td style='color:{$color};' align='center'><a href='{$pth_aci}' style='color:{$color}'>{$can_acifile}</a></td>";
-         $table.="<td style='color:{$color};' align='center'><a href='{$path_disability}' style='color:{$color}'>{$can_disabilityfile}</a></td>";
+         $table.="<td style='color:{$color};' align='center'><a href='{$path_payment}' style='color:{$color}' target='_blank'>{$can_paymentfile}</a></td>";
+         $table.="<td style='color:{$color};' align='center'><a href='a{$path_dni}' style='color:{$color}'target='_blank'>{$can_dnifile}</a></td>";
+         $table.="<td style='color:{$color};' align='center'><a href='{$pth_aci}' style='color:{$color}'target='_blank'>{$can_acifile}</a></td>";
+         $table.="<td style='color:{$color};' align='center'><a href='{$path_disability}' style='color:{$color}'target='_blank'>{$can_disabilityfile}</a></td>";
          $table.="</tr>";
         
          echo $table;
