@@ -60,7 +60,7 @@ function getDates($exams, $session_use_usetype, $year){
         if ($r["exa_status"]=='1') // if the exam is opened (NM)
             $stringPrint.="<ul><li data-jstree='{ \"icon\" : \"fa fa-file icon-state-success\" }' onclick='writeInfo({$r["exa_id"]})' ondblclick='redirect({$r["exa_id"]},{$session_use_usetype});'>";
         else                       // if the exam is closed (NM)
-            $stringPrint.="<ul><li data-jstree='{ \"icon\" : \"fa fa-file icon-state-danger\" }' ondblclick='redirect({$r["exa_id"]},{$session_use_usetype});'>";
+            $stringPrint.="<ul><li data-jstree='{ \"icon\" : \"fa fa-file icon-state-danger\" }' onclick='writeInfo({$r["exa_id"]})' ondblclick='redirect({$r["exa_id"]},{$session_use_usetype});'>";
 
         $stringPrint.=$class_utiles->fecha_mysql_php_format($r["exa_date"]);
         $stringPrint.="</li></ul>";
