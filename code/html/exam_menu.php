@@ -147,7 +147,7 @@ function getDates($exams, $session_use_usetype, $year){
 			<ul class="page-breadcrumb breadcrumb">
 				<li>
 					<a href="#">Home</a> <i style="display: <?php if ($session_use_usertype>1)echo "none";?>;" class="fa fa-circle"></i>
-					<a href="candidate_table_admin_general.php?year=2016" style="display: <?php if ($session_use_usertype>1)echo "none";?>;">General Table</a>
+					<a href="candidate_table_admin_general.php?year=2017" style="display: <?php if ($session_use_usertype>1)echo "none";?>;">General Table</a>
 				</li>		
 			</ul>
 			<!-- END PAGE BREADCRUMB -->

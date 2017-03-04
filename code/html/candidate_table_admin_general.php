@@ -228,6 +228,10 @@ function write_candidate($session_prc_id, $get_exa_id, $get_year){
 												<a href="javascript:redireccionar('candidate_table_admin_general.php?year=2016');">
 												2016 </a>
 											</li>
+		      								<li>
+												<a href="javascript:redireccionar('candidate_table_admin_general.php?year=2017');">
+												2017 </a>
+											</li>
 										</ul>
 									</div>
 									<!-- /btn-group -->
