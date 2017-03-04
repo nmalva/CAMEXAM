@@ -33,7 +33,7 @@ require("../classes/abm_clase/comun/class_orderby.php");
 
 
 //conexión a la bd
-$db = new class_db("localhost", "root", "root", "CAMEXAM");
+$db = new class_db();
 $db->mostrarErrores = true;
 $db->connect();
 
@@ -42,8 +42,7 @@ $abm = new class_abm();
 $abm->tabla = 'PrepCentre'; 
 $abm->campoId = 'prc_id'; 
 $abm->mostrarBorrar = false; 
-$abm->registros_por_pagina = 50; 
-$abm->textoTituloFormularioAgregar = "Agregar"; 
+$abm->registros_por_pagina = 50;  
 $abm->textoTituloFormularioEdicion = "Editar"; 
 $abm->campos = array( 
 	array('campo' => 'prc_name', 
