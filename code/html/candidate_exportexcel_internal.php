@@ -112,7 +112,7 @@ while ($line = $class_bd->retornar_fila($resultado)){
     $date= $class_utiles->fecha_mysql_php($line["can_datebirth"]);
     $can_candidate_type=($line["can_candidatetype"]==1 ? "Internal" : "External");
     $objPHPExcel->setActiveSheetIndex(0)
-    ->setCellValue('A'.$i,$line["can_candidatenumber"])
+    ->setCellValue('A'.$i,$line["can_candidatenum"])
     ->setCellValue('B'.$i,$line["can_firstname"])
     ->setCellValue('C'.$i,$line["can_lastname"])
     ->setCellValue('D'.$i,"")
