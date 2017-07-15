@@ -82,7 +82,7 @@ function write_candidate($session_prc_id, $get_exa_id, $field_visible){
         $line.="<td style='color:{$color};'>{$r["can_firstname"]}</td>";
         $line.="<td style='color:{$color};'>{$r["can_lastname"]}</td>";
         $line.="<td style='color:{$color};'>{$r["exp_name"]}</td>";
-       // $line.="<td style='color:{$color};'>{$r["prc_name"]}</td>";
+        $line.="<td style='color:{$color};'>{$r["prc_name"]}</td>";
         $line.="<td style='color:{$color};'><input type='text' onfocusout='updateCandidateNum({$r["can_id"]},this.value);' value='{$r["can_candidatenum"]}'></td>";
         $line.="<td style='color:{$color};'><input type='text' onfocusout='updatePackingCode({$r["can_id"]},this.value);' value='{$r["epa_packingcode"]}'></td>";
         $line.="<td style='color:{$color}; display:{$field_visible["listening"]};'><input type='text' );' value='{$r["can_timelistening"]}'></td>";
@@ -485,7 +485,7 @@ function field_visible($exa_id){
 										    <th>First Name</th>
 											<th>Last Name</th>
 											<th>Venue</th>
-										   <!--  <th>Prep. Centre</th>  --> 	
+										    <th>Prep. Centre</th> 	
 											<th>Candidate #</th>
 											<th>Packing Code</th>
 											<th style="display: <?php echo $field_visible["listening"];?>">Time Listening</th>

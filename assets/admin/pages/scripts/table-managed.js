@@ -57,6 +57,8 @@ var TableManaged = function () {
                 "orderable": false
             }, {
                 "orderable": false
+            }, {
+                "orderable": false
             }],
             "lengthMenu": [
                 [7, 25, 50, -1],
@@ -83,7 +85,7 @@ var TableManaged = function () {
                 "targets": [0]
             }],
             "order": [
-                [1, "asc"]
+                [5, "asc"]
             ] // set first column as a default sort by asc
         });
 
