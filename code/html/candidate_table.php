@@ -91,7 +91,7 @@ function write_candidate($session_prc_id, $get_exa_id, $exa_status){
         $table.="<td style='color:{$color};'>{$r["can_cellphone"]}</td>";
         $table.="<td style='color:{$color};'>{$can_visa}</td>";
         $table.="<td style='color:{$color};'>{$can_disability}</td>";
-        $table.="<td style='color:{$color};'>{$color}{$r["exp_name"]}</td>";
+        $table.="<td style='color:{$color};'>{$r["exp_name"]}</td>";
         $table.="<td style='color:{$color};'>{$r["can_comment"]}</td>";
         $table.="</tr>";
 
@@ -193,7 +193,7 @@ function write_candidate($session_prc_id, $get_exa_id, $exa_status){
 				<!-- BEGIN PAGE BREADCRUMB -->
         			<ul class="page-breadcrumb breadcrumb">
         				<li>
-        					<a href="exam_menu.php">Return</a><i class="fa fa-circle" style="display: <?php echo $display_new_candidate?>"></i>
+        					<a href="exam_menu.php">Return - </a><i class="fa fa-circle" style="display: <?php echo $display_new_candidate?>"></i>
         				</li>
         				<li>
         					<a href="javascript:redirect_check(<?php echo $get_exa_id;?>);">Candidate Workflow</a><i class="fa fa-circle" style="display: <?php echo $display_new_candidate?>"></i>
