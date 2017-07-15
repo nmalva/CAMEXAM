@@ -102,8 +102,9 @@ $objPHPExcel->setActiveSheetIndex(0)
 $sql = "SELECT * FROM Candidate 
         INNER JOIN PrepCentre ON Candidate.prc_id=PrepCentre.prc_id
         INNER JOIN ExamPlace ON Candidate.exp_id=ExamPlace.exp_id
+        LEFT JOIN ExamPlaceAula ON Candidate.epa_id=ExamPlaceAula.epa_id
         WHERE exa_id='{$get_exa_id}' AND can_status='2'
-        ORDER BY can_candidatenum ASC, ExamPlace.exp_name ASC, PrepCentre.prc_name ASC, Candidate.can_lastname ASC"; // can_status=1 --> confirmed
+        ORDER BY ExamPlace.exp_name ASC, PrepCentre.prc_name ASC, Candidate.can_lastname ASC"; // can_status=1 --> confirmed
 $resultado=$class_bd->ejecutar($sql);
 $i=2;
 while ($line = $class_bd->retornar_fila($resultado)){
@@ -118,7 +119,7 @@ while ($line = $class_bd->retornar_fila($resultado)){
     ->setCellValue('E'.$i,$gender)
     ->setCellValue('F'.$i,$can_candidate_type)
     ->setCellValue('G'.$i,$line["prc_name"])
-    ->setCellValue('H'.$i,$line["can_packingcode"]) //before  antes ->setCellValue($line["can_packingcode"],false, $class_excelexport_int);
+    ->setCellValue('H'.$i,$line["epa_packingcode"]) //before  antes ->setCellValue($line["can_packingcode"],false, $class_excelexport_int);
     ->setCellValue('I'.$i,$date)
     ->setCellValue('J'.$i,"")
     ->setCellValue('K'.$i,"")

@@ -38,95 +38,66 @@ $db->mostrarErrores = true;
 $db->connect();
 
 
-
 $abm = new class_abm(); 
-$abm->tabla = 'PrepCentre'; 
-$abm->campoId = 'prc_id'; 
+$abm->tabla = 'TypeExam'; 
+$abm->campoId = 'tye_id'; 
+$abm->mostrarNuevo = false; 
 $abm->mostrarBorrar = false; 
-$abm->registros_por_pagina = 50;  
+$abm->registros_por_pagina = 50; 
+$abm->textoTituloFormularioAgregar = "Agregar"; 
 $abm->textoTituloFormularioEdicion = "Editar"; 
 $abm->campos = array( 
-	array('campo' => 'prc_name', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Name'
-	), 
-	array('campo' => 'prc_shortname', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Short Name'
-	), 
-	array('campo' => 'prc_firstname', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'First Name'
-	), 
-	array('campo' => 'prc_lastname', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Last Name'
-	), 
-	array('campo' => 'prc_adress1', 
+	array('campo' => 'tye_name', 
 		'tipo' => 'texto',
 		'requerido' => true,
 		'maxLen' => 100,
-		'titulo' => 'Adress 1'
+		'titulo' => 'Exam Name'
 	), 
-	array('campo' => 'prc_adress2', 
+	array('campo' => 'tye_listening', 
 		'tipo' => 'texto',
 		'requerido' => true,
-		'maxLen' => 100,
-		'titulo' => 'Adress 2'
+		'maxLen' => 1,
+		'centrarColumna' => true,
+		'titulo' => 'Listening'
 	), 
-	array('campo' => 'prc_city', 
+	array('campo' => 'tye_speaking', 
 		'tipo' => 'texto',
 		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'City'
+		'maxLen' => 1,
+		'centrarColumna' => true,
+		'titulo' => 'Speaking'
 	), 
-	array('campo' => 'prc_areacode', 
+	array('campo' => 'tye_writing', 
 		'tipo' => 'texto',
 		'requerido' => true,
-		'maxLen' => 5,
-		'titulo' => 'Area Code'
+		'maxLen' => 1,
+		'centrarColumna' => true,
+		'titulo' => 'Writing'
 	), 
-	array('campo' => 'prc_telephone', 
+	array('campo' => 'tye_reading', 
 		'tipo' => 'texto',
 		'requerido' => true,
-		'maxLen' => 10,
-		'titulo' => 'Telephone'
+		'maxLen' => 1,
+		'centrarColumna' => true,
+		'titulo' => 'Reading'
 	), 
-	array('campo' => 'prc_email', 
+	array('campo' => 'tye_readingandwriting', 
 		'tipo' => 'texto',
 		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Email'
+		'maxLen' => 1,
+		'centrarColumna' => true,
+		'titulo' => 'Reading and Writing'
 	), 
-	array('campo' => 'prc_typefunding', 
+	array('campo' => 'tye_readinganduseofenglish', 
 		'tipo' => 'texto',
 		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Type Funding'
-	), 
-	array('campo' => 'prc_preparationtype', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Preparation Type'
-	), 
-	array('campo' => 'prc_uniqueid', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Unique ID'
+		'maxLen' => 1,
+		'centrarColumna' => true,
+		'titulo' => 'Reading and use of English'
 	)
+	
 ); 
-$abm->generarAbm('', 'Administrar PrepCentre'); 
-
+$abm->generarAbm('', 'Administrar TypeExam'); 
 
 /*
 echo "<br><br>";

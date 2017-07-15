@@ -103,6 +103,7 @@ $objPHPExcel->setActiveSheetIndex(0)
 $sql = "SELECT * FROM Candidate 
         INNER JOIN PrepCentre ON Candidate.prc_id=PrepCentre.prc_id
         INNER JOIN ExamPlace ON Candidate.exp_id=ExamPlace.exp_id
+        LEFT JOIN ExamPlaceAula ON Candidate.epa_id=ExamPlaceAula.epa_id
         WHERE exa_id='{$get_exa_id}' AND can_status='2'
         ORDER BY ExamPlace.exp_name, PrepCentre.prc_name, Candidate.can_lastname"; // can_status=1 --> confirmed
 $resultado=$class_bd->ejecutar($sql);
@@ -120,7 +121,7 @@ while ($line = $class_bd->retornar_fila($resultado)){
     ->setCellValue('F'.$i,$can_candidate_type)
     ->setCellValue('G'.$i,$line["exp_name"])
     ->setCellValue('H'.$i,$line["prc_name"])
-    ->setCellValue('I'.$i,$line["can_packingcode"]) //before  antes ->setCellValue($line["can_packingcode"],false, $class_excelexport_int);
+    ->setCellValue('I'.$i,$line["epa_packingcode"]) //before  antes ->setCellValue($line["can_packingcode"],false, $class_excelexport_int);
     ->setCellValue('J'.$i,$date)
     ->setCellValue('K'.$i,"")
     ->setCellValue('L'.$i,"")

@@ -54,6 +54,12 @@ function fecha_php_mysql($php){
     return $mysql;
 }
 
+function fecha_php_mysql_2($php){
+    list($dia,$mes,$ano)=explode("-",$php);
+    $mysql="$ano-$mes-$dia";
+    return $mysql;
+}
+
 function cant_dias($fecha_i,$fecha_f)
 {
 	$dias	= (strtotime($fecha_i)-strtotime($fecha_f))/86400;

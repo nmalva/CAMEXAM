@@ -38,95 +38,41 @@ $db->mostrarErrores = true;
 $db->connect();
 
 
-
 $abm = new class_abm(); 
-$abm->tabla = 'PrepCentre'; 
-$abm->campoId = 'prc_id'; 
+$abm->tabla = 'ExamPlaceAula'; 
+$abm->campoId = 'epa_id'; 
+$abm->mostrarNuevo = false; 
 $abm->mostrarBorrar = false; 
-$abm->registros_por_pagina = 50;  
+$abm->registros_por_pagina = 50; 
+$abm->textoTituloFormularioAgregar = "Agregar"; 
 $abm->textoTituloFormularioEdicion = "Editar"; 
 $abm->campos = array( 
-	array('campo' => 'prc_name', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Name'
-	), 
-	array('campo' => 'prc_shortname', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Short Name'
-	), 
-	array('campo' => 'prc_firstname', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'First Name'
-	), 
-	array('campo' => 'prc_lastname', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Last Name'
-	), 
-	array('campo' => 'prc_adress1', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 100,
-		'titulo' => 'Adress 1'
-	), 
-	array('campo' => 'prc_adress2', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 100,
-		'titulo' => 'Adress 2'
-	), 
-	array('campo' => 'prc_city', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'City'
-	), 
-	array('campo' => 'prc_areacode', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 5,
-		'titulo' => 'Area Code'
-	), 
-	array('campo' => 'prc_telephone', 
+	array('campo' => 'exp_id', 
 		'tipo' => 'texto',
 		'requerido' => true,
 		'maxLen' => 10,
-		'titulo' => 'Telephone'
+		'titulo' => 'Exp id'
 	), 
-	array('campo' => 'prc_email', 
+	array('campo' => 'epa_name', 
 		'tipo' => 'texto',
 		'requerido' => true,
 		'maxLen' => 50,
-		'titulo' => 'Email'
+		'titulo' => 'Epa name'
 	), 
-	array('campo' => 'prc_typefunding', 
+	array('campo' => 'epa_packingcode', 
 		'tipo' => 'texto',
 		'requerido' => true,
 		'maxLen' => 50,
-		'titulo' => 'Type Funding'
+		'titulo' => 'Epa packingcode'
 	), 
-	array('campo' => 'prc_preparationtype', 
+	array('campo' => 'epa_capacity', 
 		'tipo' => 'texto',
 		'requerido' => true,
 		'maxLen' => 50,
-		'titulo' => 'Preparation Type'
-	), 
-	array('campo' => 'prc_uniqueid', 
-		'tipo' => 'texto',
-		'requerido' => true,
-		'maxLen' => 50,
-		'titulo' => 'Unique ID'
+		'titulo' => 'Epa capacity'
 	)
 ); 
-$abm->generarAbm('', 'Administrar PrepCentre'); 
-
+$abm->generarAbm('', 'Administrar ExamPlaceAula'); 
 
 /*
 echo "<br><br>";

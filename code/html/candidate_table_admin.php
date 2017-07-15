@@ -74,13 +74,14 @@ function write_candidate($session_prc_id, $get_exa_id){
          if ($r["can_dnifile"]!=""){$can_dnifile="Y";}else{$can_dnifile="N";}
          if ($r["can_acifile"]!=""){$can_acifile="Y";}else{$can_acifile="N";}
          if ($r["can_disabilityfile"]!=""){$can_disabilityfile="Y";}else{$can_disabilityfile="N";}
-               
+         if ($r["can_disability"]==1){$background_tr_color=COLOR_DISABILITY;}else{$background_tr_color="";}
+             
          $path_payment=$folder.$r["can_paymentfile"];
          $path_dni=$folder.$r["can_dnifile"];
          $path_aci=$folder.$r["can_acifile"];
          $path_disability=$folder.$r["can_disabilityfile"];
          
-         $table="<tr>";
+         $table="<tr  style='background-color:{$background_tr_color};'>";
          $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$r["can_id"]}</td>";
          $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$r["can_firstname"]}</td>";
          $table.="<td style='color:{$color}; cursor:pointer;' onclick='redirect({$r["can_id"]});'>{$r["can_lastname"]}</td>";
@@ -103,6 +104,8 @@ function write_candidate($session_prc_id, $get_exa_id){
     }
 ?>
 <head>
+
+
 <td style="background-color: 
 <!--  PAGE TITLE  -->
 <?php include ("includes/pagetitle.php");?>

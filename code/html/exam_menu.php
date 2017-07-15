@@ -175,8 +175,10 @@ function getDates($exams, $session_use_usetype, $year){
 							 
 							 $stringExams=getStringExams("2015", $session_use_usetype);
 							 $stringExams1=getStringExams("2016", $session_use_usetype);
+							 $stringExams2=getStringExams("2017", $session_use_usetype);
 							 echo "<ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>2015{$stringExams}</li></ul>";
 							 echo "<ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>2016{$stringExams1}</li></ul>";
+							 echo "<ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>2017{$stringExams2}</li></ul>";
 							 //echo "Para escapar caracteres se hace \"as�\".";							 
 							 ?>                          
 							</div>

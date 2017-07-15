@@ -23,7 +23,7 @@ $can_timewriting= $_POST["can_timewriting"];
 $can_timereading= $_POST["can_timereading"];
 $can_timereadingandwriting= $_POST["can_timereadingandwriting"];
 $can_timereadinganduseofe =$_POST["can_timereadinganduseofe"];
-
+$can_datespeaking = $_POST["can_datespeaking"];
 
 echo $set;
 $quantity = count($array_ids);
@@ -39,7 +39,7 @@ if($set=="set_packingcode"){
     updatePackingcode($array_ids, $quantity, $epa_id);
 }
 if($set=="set_timespeaking"){
-    updateTimespeaking($array_ids, $quantity, $time_start_speaking, $time_interval, $time_group);
+    updateTimespeaking($array_ids, $quantity, $time_start_speaking, $time_interval, $time_group, $can_datespeaking);
 }
 if($set=="set_timevarious"){
    updateTimelistening($array_ids, $quantity, $can_timelistening);
@@ -68,20 +68,26 @@ function updatePackingcode($array_ids, $quantity, $epa_id){
         $class_candidate[$i]->setEpa_id($epa_id);
     }
 }
-function updateTimespeaking($array_ids, $quantity, $time_start_speaking,$time_interval, $time_group){
+function updateTimespeaking($array_ids, $quantity, $time_start_speaking,$time_interval, $time_group, $can_datespeaking){
     $a==0;
     $b=0;
+    $class_utiles=new utiles();
     for ($i=0; $i<$quantity; $i++){
         
         $time_speaking = date("H:i:s",strtotime($time_start_speaking)+($b*$time_interval*60));
         $class_candidate[$i]= new Candidate($array_ids[$i]);
         $class_candidate[$i]->setCan_timespeaking($time_speaking);
+        $class_candidate[$i]->setCan_datespeaking($class_utiles->fecha_php_mysql_2($can_datespeaking));
+
         $a++;
         if ($a==$time_group){
             $b++;
             $a=0;
         }
     }
+
+echo $can_datespeaking."hola";
+
 }
 
 function updateTimelistening($array_ids, $quantity, $can_timelistening){

@@ -45,6 +45,7 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 				$this->can_commentadmin=$r["can_commentadmin"];
 				$this->can_timelistening=$r["can_timelistening"];
 				$this->can_timespeaking=$r["can_timespeaking"];
+				$this->can_datespeaking=$r["can_datespeaking"];
 				$this->can_timewriting=$r["can_timewriting"];
 				$this->can_timereading=$r["can_timereading"];
 				$this->can_timereadingandwriting=$r["can_timereadingandwriting"];
@@ -87,6 +88,7 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 	function getCan_commentadmin(){return $this->can_commentadmin;}
 	function getCan_timelistening(){return $this->can_timelistening;}
 	function getCan_timespeaking(){return $this->can_timespeaking;}
+	function getCan_datepeaking(){return $this->can_datespeaking;}
 	function getCan_timewriting(){return $this->can_timewriting;}
 	function getCan_timereading(){return $this->can_timereading;}
 	function getCan_timereadingandwriting(){return $this->can_timereadingandwriting;}
@@ -208,6 +210,10 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 	}
 	function setCan_timespeaking($value){
 	    $sql="UPDATE Candidate SET can_timespeaking= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
+	function setCan_datespeaking($value){
+	    $sql="UPDATE Candidate SET can_datespeaking= '{$value}'  WHERE can_id={$this->can_id}";
 	    $this-> ejecutar($sql);
 	}
 	function setCan_timewriting($value){

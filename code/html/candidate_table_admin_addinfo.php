@@ -18,6 +18,7 @@
 $_SESSION["exa_id"]=$_GET["exa_id"]; //It is used in the form (to not use get)
 $get_exa_id=$_GET["exa_id"];
 $session_prc_id= $_SESSION["prc_id"];
+$field_visible = field_visible($get_exa_id);
 ?>
 <!--  END GLOBAL VARIABLES -->
 
@@ -31,7 +32,7 @@ function getExaInfo($exa_id){
     $r=$class_bd->retornar_fila($resultado);   
 	echo "{$r["tye_name"]} Exam <small>( {$class_utiles->fecha_mysql_php($r["exa_date"])})</small>";	
 }
-function write_candidate($session_prc_id, $get_exa_id){
+function write_candidate($session_prc_id, $get_exa_id, $field_visible){
     $class_bd=new bd();
     $class_utiles= new utiles();
     $folder="../../files/";
@@ -68,6 +69,13 @@ function write_candidate($session_prc_id, $get_exa_id){
         else
             $can_disability="Yes";
          
+        if($r["can_datespeaking"]=="0000-00-00"){
+            $date_speaking="";
+        }else
+            $date_speaking= $class_utiles->fecha_mysql_php($r["can_datespeaking"]);
+
+
+
         $line="<tr class='odd gradeX'>"; 
         $line.="<td> <input type='checkbox' name='check' id='{$r["can_id"]}' class='checkboxes' value='{$r["can_id"]}'/></td>";
         $line.="<td style='color:{$color};'>{$r["can_id"]}</td>";
@@ -77,12 +85,13 @@ function write_candidate($session_prc_id, $get_exa_id){
        // $line.="<td style='color:{$color};'>{$r["prc_name"]}</td>";
         $line.="<td style='color:{$color};'><input type='text' onfocusout='updateCandidateNum({$r["can_id"]},this.value);' value='{$r["can_candidatenum"]}'></td>";
         $line.="<td style='color:{$color};'><input type='text' onfocusout='updatePackingCode({$r["can_id"]},this.value);' value='{$r["epa_packingcode"]}'></td>";
-        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timelistening"]}'></td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["listening"]};'><input type='text' );' value='{$r["can_timelistening"]}'></td>";
         $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timespeaking"]}'></td>";
-        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timewriting"]}'></td>";
-        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timereading"]}'></td>";
-        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timereadingandwriting"]}'></td>";
-        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timereadinganduseofenglish"]}'></td>";
+        $line.="<td style='color:{$color};'><input type='text' );' value='{$date_speaking}'></td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["writing"]};'><input type='text' );' value='{$r["can_timewriting"]}'></td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["reading"]};'><input type='text' );' value='{$r["can_timereading"]}'></td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["readingandwriting"]};'><input type='text' );' value='{$r["can_timereadingandwriting"]}'></td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["readinganduseofenglish"]};'><input type='text' );' value='{$r["can_timereadinganduseofenglish"]}'></td>";
         $line.="</tr>";
          
          echo $line;
@@ -99,6 +108,24 @@ function write_candidate($session_prc_id, $get_exa_id){
           echo "<option value='{$r["epa_id"]}'>{$r["exp_name"]}-{$r["epa_packingcode"]} </option>";
         }
     }
+
+
+function field_visible($exa_id){
+    $class_utiles=new utiles();
+    $class_bd=new bd();
+    $sql="SELECT * FROM Exam INNER JOIN TypeExam on Exam.tye_id=TypeExam.tye_id WHERE exa_id={$exa_id}";
+    $resultado=$class_bd->ejecutar($sql);
+    $r=$class_bd->retornar_fila($resultado);   
+    
+    ($r["tye_listening"]==0) ? $fild_visible["listening"]='none':"";
+    ($r["tye_speaking"]==0) ? $fild_visible["speaking"]='none':"";
+    ($r["tye_writing"]==0) ? $fild_visible["writing"]='none':"";
+    ($r["tye_reading"]==0) ? $fild_visible["reading"]='none':"";
+    ($r["tye_readingandwriting"]==0) ? $fild_visible["readingandwriting"]='none':"";
+    ($r["tye_readinganduseofenglish"]==0) ? $fild_visible["readinganduseofenglish"]='none':"";
+
+    return $fild_visible;    
+}
 ?>
 <head>
 
@@ -121,7 +148,12 @@ function write_candidate($session_prc_id, $get_exa_id){
 <link rel="stylesheet" type="text/css"
 	href="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="../../assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css"/>
-	
+<link rel="stylesheet" type="text/css" href="../../assets/global/plugins/bootstrap-datepicker/css/datepicker3.css"/>
+
+<!-- BEGIN PAGE LEVEL STYLES USED BYE TOASTR NOTIFICATION -->
+<link rel="stylesheet" type="text/css"
+    href="../../assets/global/plugins/bootstrap-toastr/toastr.min.css" />
+<!-- END PAGE LEVEL STYLES -->
 	
 	
 <!-- END PAGE LEVEL STYLES -->
@@ -307,8 +339,8 @@ function write_candidate($session_prc_id, $get_exa_id){
 								<div class="form-body">	
 								    <div class="row">		
     								 <div class="form-group">
-    										<label class="control-label col-md-1">L</label>
-    										<div class="col-md-3">
+    										<label class="control-label col-md-1" style="display: <?php echo $field_visible['listening'];?>">L</label>
+    										<div class="col-md-3" style="display: <?php echo $field_visible['listening'];?>">
     											<div class="input-group">
     												<input type="text" class="form-control timepicker timepicker-24" id='can_timelistening' name='can_timelistening'>
     												<span class="input-group-btn">
@@ -316,8 +348,8 @@ function write_candidate($session_prc_id, $get_exa_id){
     												</span>
     											</div>
     										</div>
-    										<label class="control-label col-md-1">W</label>
-    										<div class="col-md-3">
+    										<label class="control-label col-md-1" style="display: <?php echo $field_visible['writing'];?>">W</label>
+    										<div class="col-md-3" style="display: <?php echo $field_visible['writing'];?>">
     											<div class="input-group">
     												<input type="text" class="form-control timepicker timepicker-24" id='can_timewriting' name='can_timewriting'>
     												<span class="input-group-btn">
@@ -325,9 +357,9 @@ function write_candidate($session_prc_id, $get_exa_id){
     												</span>
     											</div>
     										</div>
-    										<label class="control-label col-md-1">R</label>
+    										<label class="control-label col-md-1" style="display: <?php echo $field_visible['reading'];?>">R</label>
     										<div class="col-md-3">
-    											<div class="input-group">
+    											<div class="input-group" style="display: <?php echo $field_visible['reading'];?>">
     												<input type="text" class="form-control timepicker timepicker-24" id='can_timereading' name='can_timereading'>
     												<span class="input-group-btn">
     												<button class="btn default" type="button"><i class="fa fa-clock-o"></i></button>
@@ -339,8 +371,8 @@ function write_candidate($session_prc_id, $get_exa_id){
     								  <span><br/></span>
     								 <div class="row">		
         								 <div class="form-group">
-        										<label class="control-label col-md-1">R&W</label>
-        										<div class="col-md-3">
+        										<label class="control-label col-md-1" style="display: <?php echo $field_visible['readingandwriting'];?>">R&W</label>
+        										<div class="col-md-3" style="display: <?php echo $field_visible['readingandwriting'];?>">
         											<div class="input-group">
         												<input type="text" class="form-control timepicker timepicker-24" id='can_timereadingandwriting' name='can_timereadingandwriting'>
         												<span class="input-group-btn">
@@ -348,8 +380,8 @@ function write_candidate($session_prc_id, $get_exa_id){
         												</span>
         											</div>
         										</div>
-        										<label class="control-label col-md-1">R&E</label>
-        										<div class="col-md-3">
+        										<label class="control-label col-md-1" style="display: <?php echo $field_visible['readinganduseofenglish'];?>">R&E</label>
+        										<div class="col-md-3" style="display: <?php echo $field_visible['readinganduseofenglish'];?>">
         											<div class="input-group">
         												<input type="text" class="form-control timepicker timepicker-24" id='can_timereadinganduseofe' name='can_timereadinganduseofe'>
         												<span class="input-group-btn">
@@ -369,14 +401,7 @@ function write_candidate($session_prc_id, $get_exa_id){
         								   </div>
     								  </div>
     								 <span><br/><br/><br/></span>
-    								 
-    								 
-    								 
-    						
-    								 
-    								 
     								 <div class="row">	
-    									
         								 <div class="form-group">
         										<label class="control-label col-md-1">Start</label>
         										<div class="col-md-3">
@@ -390,9 +415,10 @@ function write_candidate($session_prc_id, $get_exa_id){
         										<label class="control-label col-md-1">Inter.</label>
         										<div class="col-md-3">
         											<div class="input-group">
-        												<input type="text" class="form-control" id='time_interval' name='time_interval'>
+        												<input type="text" class="form-control" id='time_interval' name='time_interval' placeholder="min. between exams">
         											</div>
         										</div>
+
         										<label class="control-label col-md-1">Group </label>
         										<div class="col-md-3">
         											<div class="input-group">
@@ -402,9 +428,23 @@ function write_candidate($session_prc_id, $get_exa_id){
         												</span>
         											</div>
         										</div>
+
         								   </div>
     								  </div>
-    								  
+                                    <br/>
+        								  <div class="row">  
+                                            <div class="form-group">
+                                            <label class="control-label col-md-1">Fecha</label>
+                                            <div class="col-md-3">
+                                                <div class="input-group date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
+                                                    <input type="text" class="form-control" id='can_datespeaking' name='can_datespeaking' readonly>
+                                                    <span class="input-group-btn">
+                                                    <button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
         			             </div>  			             
         			         </form>
         			     </div>
@@ -448,18 +488,19 @@ function write_candidate($session_prc_id, $get_exa_id){
 										   <!--  <th>Prep. Centre</th>  --> 	
 											<th>Candidate #</th>
 											<th>Packing Code</th>
-											<th>Time Listening</th>
+											<th style="display: <?php echo $field_visible["listening"];?>">Time Listening</th>
 											<th>Time Speaking</th>
-											<th>Time Writing</th>
-											<th>Time Reading</th>
-											<th>Time Reading and Writing</th>
-											<th>Time Reading and Use of English</th>
+                                            <th>Date Speaking</th>
+											<th style="display: <?php echo $field_visible["writing"];?>">Time Writing</th>
+											<th style="display: <?php echo $field_visible["reading"];?>">Time Reading</th>
+											<th style="display: <?php echo $field_visible["readingandwriting"];?>">Time Reading and Writing</th>
+											<th style="display: <?php echo $field_visible["readinganduseofenglish"];?>">Time Reading and Use of English</th>
 										
 										</tr>
 									</thead>
 							<tbody>
 							<?php 
-							    write_candidate($session_prc_id, $get_exa_id);							
+							    write_candidate($session_prc_id, $get_exa_id, $field_visible);							
 							?>
 							</tbody>
 						    </table>
@@ -518,9 +559,14 @@ function write_candidate($session_prc_id, $get_exa_id){
 	
 
 <script type="text/javascript" src="../../assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
+<script type="text/javascript" src="../../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 
 <!-- END PAGE LEVEL PLUGINS -->
 
+<!-- BEGIN PAGE LEVEL SCRIPTS USED BY TOASTR-->
+<script
+    src="../../assets/global/plugins/bootstrap-toastr/toastr.min.js"></script>
+<script src="../../assets/admin/pages/scripts/ui-toastr.js"></script>
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="../../assets/global/scripts/metronic.js"
 	type="text/javascript"></script>
@@ -541,6 +587,7 @@ jQuery(document).ready(function() {
 		Demo.init(); // init demo features
 	    TableManaged.init();
 	    ComponentsPickers.init();
+        UIToastr.init(); //used by toastr
 	});
 
 //--START JAVASCRIPT FUNCTIONS--
@@ -620,7 +667,7 @@ function set_candidate(){
         type: "POST",
         data:{ids:ids, init_value:init_value, set:set},
         success: function(opciones){ 
-            alert(init_value);
+            toast("Candidate Number");
           }
        });
 
@@ -645,32 +692,38 @@ function set_packingcode(){
         type: "POST",
         data:{ids:ids, epa_id:epa_id, set:set},
         success: function(opciones){ 
-            alert(opciones);
+            toast("Packing Code");  
           }
        });
 }
 
 function set_cantimespeaking(){
+
 	var ids;
 	var time_interval;
 	var time_start_speaking;
 	var time_group;
+    var can_datespeaking;
+
 	var set;
     ids = $('input[type=checkbox]:checked').map(function() {
   	    return $(this).attr('id');
    	   }).get();  
     time_interval= this.document.getElementById("time_interval").value  
     time_start_speaking= this.document.getElementById("time_start_speaking").value
-    time_group= this.document.getElementById("time_group").value        
+    time_group= this.document.getElementById("time_group").value   
+    can_datespeaking = this.document.getElementById("can_datespeaking").value     
     set="set_timespeaking";
     // alert('IDS: ' + ids.join(', '));
+         
+
 
      $.ajax({
         url:"../abm/abm.candidate_parameters.php",
         type: "POST",
-        data:{ids:ids, time_interval:time_interval, time_start_speaking:time_start_speaking, time_group:time_group,set:set},
+        data:{ids:ids, time_interval:time_interval, time_start_speaking:time_start_speaking, can_datespeaking:can_datespeaking, time_group:time_group,set:set},
         success: function(opciones){ 
-            alert(opciones);
+           toast("Speaking");
           }
        });
 }
@@ -701,10 +754,28 @@ function set_cantimevarious(){
         data:{ids:ids, can_timelistening:can_timelistening, can_timewriting:can_timewriting, can_timereading:can_timereading,
               can_timereadingandwriting:can_timereadingandwriting, can_timereadinganduseofe:can_timereadinganduseofe, set:set},
         success: function(opciones){ 
-            alert(opciones);
+            toast("Times");
           }
        });
 }
+
+function toast(variable){
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "positionClass": "toast-top-right",
+        "onclick": null,
+        "showDuration": "1000",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };                  
+    toastr.success('Correctly Updated', variable);                
+ }   
 //--END JAVASCRIPT FUNCTIONS--
 </script>
 

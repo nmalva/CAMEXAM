@@ -1,5 +1,6 @@
+
 <?php include ("includes/title.php");?>
-<?php include ("includes/security_session.php");?>
+<?php //include ("includes/security_session.php");?>
 <!DOCTYPE html>
 <html lang="en">
 <!--<![endif]-->
@@ -16,24 +17,14 @@ include_once("../classes/class.utiles.php");
 <!--  BEGIN GLOBAL VARIABLES -->
 <?php 
 $session_can_id = $_SESSION["can_id"];
+$r = get_candidate($session_can_id);
+$class_utiles = new utiles();
 ?>
 <!--  END GLOBAL VARIABLES -->
 
 <!--  BEGIN PHP FUNCTIONS -->
 <?php 
-function getStringExams($year, $session_use_usetype){ //get the string to print exams
-    $exams=getTypeExams($year);
-    $size=sizeof($exams);
-    $class_utiles = new utiles();
-    for ($i=0;$i<$size;$i++){
-        $stringPrint.="<ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>";
-        $stringPrint.=$exams[$i];
-        $stringPrint.=getDates($exams[$i], $session_use_usetype, $year);
-        $stringPrint.="</li></ul>";
-    }
-    
-    return ($stringPrint);
-}
+
 function getTypeExams($year){
     $class_bd=new bd();
     $year_ini=$year-1;
@@ -71,33 +62,138 @@ function getDates($exams, $session_use_usetype, $year){
 function get_candidate($can_id){
     $class_bd=new bd();
     $sql="SELECT * FROM Candidate
-    LEFT JOIN ExamPlaceAula on Candidate.epa_id=ExamPlaceAula.epa_id
-    LEFT JOIN ExamPlace on Candidate.exp_id=ExamPlace.exp_id
-    WHERE can_id = '{$can_id}'";
+	    LEFT JOIN ExamPlaceAula on Candidate.epa_id=ExamPlaceAula.epa_id
+	    LEFT JOIN ExamPlace on Candidate.exp_id=ExamPlace.exp_id
+	    LEFT JOIN Exam on Candidate.exa_id=Exam.exa_id
+    	WHERE can_id = '{$can_id}'
+    	ORDER BY can_id ASC";
     $resultado = $class_bd->ejecutar($sql);
     $r=$class_bd->retornar_fila($resultado);
     return ($r);
 }
 
-function exam_info($r){
+function exp_datos($epa_id){
+	//Esta funcion es para traer los datos de la institucion relacionados al Paking Code cargado
+	// y no al exa id cargado al alumno en una primera instancia.
+	$class_bd = new bd();
+	$sql="SELECT * FROM ExamPlaceAula 
+		  INNER JOIN ExamPlace on ExamPlaceAula.exp_id=ExamPlace.exp_id WHERE epa_id={$epa_id}";
+    $resultado=$class_bd->ejecutar($sql);
+    $r=$class_bd->retornar_fila($resultado);   
+    return ($r);
+}
+
+function type_exam($tye_id){
+	$class_bd = new bd();
+	$sql="SELECT * FROM TypeExam 
+		  WHERE tye_id={$tye_id}";
+    $resultado=$class_bd->ejecutar($sql);
+    $r=$class_bd->retornar_fila($resultado);   
+    return ($r["tye_name"]);
+
+}
+function exam_info($r,$field_visible){
+$class_utiles=new utiles();
+$date_exam = $class_utiles->fecha_mysql_php($r["exa_date"]);
+
+$exp_datos= exp_datos($r["epa_id"]);
+
+if($r["can_datespeaking"]== NULL || $r["can_datespeaking"]=="0000-00-00" )
+	$date_speaking = $date_exam;
+else
+	$date_speaking = $class_utiles->fecha_mysql_php($r["can_datespeaking"]);
+
+
+$fecha = $class_utiles->compararFechas($r["can_datespeaking"],$r["exa_date"]); //2 --> fecha 1 > fecha 2
+
+
+if ($fecha ==0 ){
+     echo "<tr'>
+     	    <td width='200px'>Speaking </td>
+     		<td> {$r["can_timespeaking"]} hs</td>
+     		<td> {$date_speaking}</td>
+     		<td> {$exp_datos["exp_name"]}</td>
+     		<td> {$exp_datos["exp_adress"]}</td>
+     		<td> {$r["epa_name"]}</td>
+     	 </tr>";
+}
+  
+
+ echo "<tr style='display:{$field_visible["readingandwriting"]};'>
+     	    <td width='200px'>Reading and Writing </td>
+     		<td> {$r["can_timereadingandwriting"]} hs</td>
+     		<td> {$date_exam}</td>
+     		<td> {$exp_datos["exp_name"]}</td>
+     		<td> {$exp_datos["exp_adress"]}</td>
+     		<td> {$r["epa_name"]}</td>
+     	 </tr>";
+
+ echo "<tr style='display:{$field_visible["readinganduseofenglish"]};'>
+     	    <td width='200px'>Reading and use of English </td>
+     		<td> {$r["can_timereadinganduseofenglish"]} hs</td>
+     		<td> {$date_exam}</td>
+     		<td> {$exp_datos["exp_name"]}</td>
+     		<td> {$exp_datos["exp_adress"]}</td>
+     		<td> {$r["epa_name"]}</td>
+     	 </tr>";
+
+  echo "<tr style='display:{$field_visible["reading"]};'>
+     	    <td width='200px'>Reading</td>
+     		<td> {$r["can_timereading"]} hs</td>
+     		<td> {$date_exam}</td>
+     		<td> {$exp_datos["exp_name"]}</td>
+     		<td> {$exp_datos["exp_adress"]}</td>
+     		<td> {$r["epa_name"]}</td>
+     	 </tr>";
+
+   echo "<tr style='display:{$field_visible["writing"]};'>
+     	    <td width='200px'>Writing </td>
+     		<td> {$r["can_timewriting"]} hs</td>
+     		<td> {$date_exam}</td>
+     		<td> {$exp_datos["exp_name"]}</td>
+     		<td> {$exp_datos["exp_adress"]}</td>
+     		<td> {$r["epa_name"]}</td>
+     	 </tr>";
+
+     echo "<tr style='display:{$field_visible["listening"]};'>
+     	    <td width='200px'>Listening </td>
+     		<td> {$r["can_timelistening"]} hs</td>
+     		<td> {$date_exam}</td>
+     		<td> {$exp_datos["exp_name"]}</td>
+     		<td> {$exp_datos["exp_adress"]}</td>
+     		<td> {$r["epa_name"]}</td>
+     	 </tr>";
+
+if ($fecha>0){
+     echo "<tr'>
+     	    <td width='200px'>Speaking </td>
+     		<td> {$r["can_timespeaking"]} hs</td>
+     		<td> {$date_speaking}</td>
+     		<td> {$exp_datos["exp_name"]}</td>
+     		<td> {$exp_datos["exp_adress"]}</td>
+     		<td> {$r["epa_name"]}</td>
+     	 </tr>";
+}
+  
 
     
-    
-    if ($r["can_timelistening"]!=NULL and $r["can_timelistening"]!="00:00:00")
-          echo "<tr><td width='200px'>Listening: </td><td> {$r["can_timelistening"]} hs</td></tr>";
-    if ($r["can_timespeaking"]!=NULL and $r["can_timespeaking"]!="00:00:00")
-        echo "<tr><td width='200px'>Speaking: </td><td> {$r["can_timespeaking"]} hs</td></tr>";
-    if ($r["can_timewriting"]!=NULL and $r["can_timewriting"]!="00:00:00")
-        echo "<tr><td width='200px'>Writing: </td><td> {$r["can_timewriting"]} hs</td></tr>";
-    if ($r["can_timereading"]!=NULL and $r["can_timereading"]!="00:00:00")
-        echo "<tr><td width='200px'>Reading: </td><td> {$r["can_timereading"]} hs</td></tr>";
-    if ($r["can_timereadingandwriting"]!=NULL and $r["can_timereadingandwriting"]!="00:00:00")
-        echo "<tr><td width='200px'>Listening and Writing: </td><td> {$r["can_timereadingandwriting"]} hs</td></tr>";
-    if ($r["can_timereadinganduseofenglish"]!=NULL and $r["can_timereadinganduseofenglish"]!="00:00:00")
-        echo "<tr><td width='200px'>Listening and use of English: </td><td> {$r["can_timereadinganduseofenglish"]} hs</td></tr>";
+}
 
+function field_visible($exa_id){
+    $class_utiles=new utiles();
+    $class_bd=new bd();
+    $sql="SELECT * FROM Exam INNER JOIN TypeExam on Exam.tye_id=TypeExam.tye_id WHERE exa_id={$exa_id}";
+    $resultado=$class_bd->ejecutar($sql);
+    $r=$class_bd->retornar_fila($resultado);   
     
+    ($r["tye_listening"]==0) ? $fild_visible["listening"]='none':"";
+    ($r["tye_speaking"]==0) ? $fild_visible["speaking"]='none':"";
+    ($r["tye_writing"]==0) ? $fild_visible["writing"]='none':"";
+    ($r["tye_reading"]==0) ? $fild_visible["reading"]='none':"";
+    ($r["tye_readingandwriting"]==0) ? $fild_visible["readingandwriting"]='none':"";
+    ($r["tye_readinganduseofenglish"]==0) ? $fild_visible["readinganduseofenglish"]='none':"";
 
+    return $fild_visible;    
 }
     
 function place_info($r){
@@ -116,8 +212,23 @@ function place_info($r){
 <!-- BEGIN GLOBAL MANDATORY STYLES -->
 <?php include("includes/globalstyle.html");?>
 <!-- END GLOBAL MANDATORY STYLES -->
+
+<!-- BEGIN PAGE LEVEL STYLES USED BY TABLE-->
+<link rel="stylesheet" type="text/css"
+	href="../../assets/global/plugins/select2/select2.css" />
+<link rel="stylesheet" type="text/css"
+	href="../../assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../../assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css" />
+<!-- END PAGE LEVEL STYLES -->
+
 <!-- BEGIN PAGE LEVEL STYLES -->
 <link rel="stylesheet" type="text/css" href="../../assets/global/plugins/jstree/dist/themes/default/style.min.css"/>
+<link href="../../assets/admin/pages/css/invoice.css" rel="stylesheet" type="text/css"/>
+
+
 <!-- END PAGE LEVEL STYLES -->
 <!-- BEGIN THEME STYLES -->
 <?php include ("includes/themestyle.html")?>
@@ -126,20 +237,18 @@ function place_info($r){
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
-<!-- DOC: Apply "page-header-menu-fixed" class to set the mega menu fixed  -->
-<!-- DOC: Apply "page-header-top-fixed" class to set the top menu fixed  -->
+
 <body>
 <!-- BEGIN HEADER -->
 <div class="page-header">
 	<!-- BEGIN HEADER TOP -->
 
 
-
 <div class="page-header-top">
 		<div class="container">
 			<!-- BEGIN LOGO -->
 			<div class="page-logo">
-				<a href=""><img src="../../assets/admin/layout3/img/logo-academia-2.jpg" alt="logo" ></a>
+				<!-- <a href=""><img src="../../assets/admin/layout3/img/logo-academia-5.jpg" alt="logo" ></a>-->
 			</div>
 			<!-- END LOGO -->
 			<!-- BEGIN RESPONSIVE MENU TOGGLER -->
@@ -243,7 +352,7 @@ function place_info($r){
 						</a>
 						<ul class="dropdown-menu dropdown-menu-default">
 							<li>
-								<a href="login_form.php">
+								<a href="login_form_info.php">
 								<i class="icon-key"></i> Log Out </a>
 							</li>
 						</ul>
@@ -257,23 +366,8 @@ function place_info($r){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 	<!-- END HEADER TOP -->
 	<!-- BEGIN HEADER MENU -->
-
-	 
-	 
 	 
 
 <div class="page-header-menu">
@@ -352,356 +446,174 @@ function place_info($r){
 			<!-- BEGIN PAGE BREADCRUMB -->
 
 			<!-- END PAGE BREADCRUMB -->
+
+
+
+
+
+
+				<!-- BEGIN PAGE CONTENT -->
+	<div class="page-content">
+		<div class="container">
+			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							<h4 class="modal-title">Modal title</h4>
+						</div>
+						<div class="modal-body">
+							 Widget settings form goes here
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn blue">Save changes</button>
+							<button type="button" class="btn default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+			<!-- /.modal -->
+			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<!-- BEGIN PAGE BREADCRUMB -->
+			<!--<ul class="page-breadcrumb breadcrumb">
+				<li>
+					<a href="#">Home</a><i class="fa fa-circle"></i>
+				</li>
+				<li>
+					<a href="extra_invoice.html">Pages</a>
+					<i class="fa fa-circle"></i>
+				</li>
+				<li class="active">
+					 Invoice
+				</li>
+			</ul>-->
+			<!-- END PAGE BREADCRUMB -->
 			<!-- BEGIN PAGE CONTENT INNER -->
-			
 			<div class="portlet light">
 				<div class="portlet-body">
-					<div class="row">
-						<div class="col-md-3">
-							<ul class="ver-inline-menu tabbable margin-bottom-10">
-								<li class="active">
-									<a data-toggle="tab" href="#tab_1">
-									<i class="fa fa-briefcase"></i> Fecha, Horario y Lugar</a>
-									<span class="after">
-									</span>
-								</li>
-								<li class="active">
-									<a data-toggle="tab" href="#tab_2">
-									<i class="fa fa-group"></i> Membership </a>
-								</li>
-								<li>
-									<a data-toggle="tab" href="#tab_3">
-									<i class="fa fa-leaf"></i> Terms Of Service </a>
-								</li>
-								<li>
-									<a data-toggle="tab" href="#tab_1">
-									<i class="fa fa-info-circle"></i> License Terms </a>
-								</li>
-								<li>
-									<a data-toggle="tab" href="#tab_2">
-									<i class="fa fa-tint"></i> Payment Rules </a>
-								</li>
-								<li>
-									<a data-toggle="tab" href="#tab_3">
-									<i class="fa fa-plus"></i> Other Questions </a>
-								</li>
-							</ul>
+					<div class="invoice">
+						<div class="row invoice-logo">
+							<div class="col-xs-3 invoice-logo-space">
+
+								<img src="../../assets/admin/layout3/img/logo-academia-5.jpg" class="img-responsive" alt=""/>
+								 <br/>
+							
+							</div>
+							<div class="col-xs-9">
+								<p>
+
+									 <?echo $r["can_firstname"]. " " . $r["can_lastname"];?> 
+									 <span class="muted"><?echo "<strong>DNI: </strong>".$r["can_dni"]." - <strong>Fecha de Nacimiento: </strong>".$class_utiles->fecha_mysql_php($r["can_datebirth"]);?> </span>
+									 <span class="muted"><?echo "<strong>Número de Candidato: </strong>".$r["can_candidatenum"]. " - <strong>Examen: </strong>".type_exam($r["tye_id"]);?> </span>
+									
+								</p>
+							</div>
 						</div>
-						<div class="col-md-9">
-							<div class="tab-content">
-								<div id="tab_1" class="tab-pane active">
-									<div id="accordion1" class="panel-group">
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#accordion1_1">
-												1. Fecha, Horario y Lugar</a>
-												</h4>
-											</div>
-											<div id="accordion1_1" class="panel-collapse collapse in">
-												<div class="panel-body">
-												<table border=1>
-												   <?php 
-												   $r = get_candidate($session_can_id);
-												   echo exam_info($r);
-												   ?>
-												</table>	
-												<br/> 
-													<?php echo place_info($r); 
-													?>
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#accordion1_2">
-												2. Que debo llevar </a>
-												</h4>
-											</div>
-											<div id="accordion1_2" class="panel-collapse collapse">
-												<div class="panel-body">
-													 Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-success">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#accordion1_3">
-												3. Otra Información </a>
-												</h4>
-											</div>
-											<div id="accordion1_3" class="panel-collapse collapse">
-												<div class="panel-body">
-													 Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-warning">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#accordion1_4">
-												4. Otro </a>
-												</h4>
-											</div>
-											<div id="accordion1_4" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-danger">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#accordion1_5">
-												5. Leggings occaecat craft beer farm-to-table, raw denim aesthetic ? </a>
-												</h4>
-											</div>
-											<div id="accordion1_5" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#accordion1_6">
-												6. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth ? </a>
-												</h4>
-											</div>
-											<div id="accordion1_6" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#accordion1_7">
-												7. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft ? </a>
-												</h4>
-											</div>
-											<div id="accordion1_7" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et
-												</div>
-											</div>
-										</div>
-									</div>
+						<hr/>
+						<h3>Horario de Examen:</h3>
+						<div class="row">
+							<div class="col-xs-12">
+								<table class="table table-striped table-bordered table-hover"
+									id="sample_examinfo">
+								<thead>
+								<tr>
+									<th>
+										 Examen
+									</th>
+									<th>
+										 Horario
+									</th>
+									<th >
+										 Fecha
+									</th>
+									<th >
+										 Lugar
+									</th>
+									<th >
+										 Dirección
+									</th>
+									<th >
+										 Aula
+									</th>
+								</tr>
+								</thead>
+								<tbody>		
+									<?php 
+										$field_visible = field_visible($r["exa_id"]);
+										echo exam_info($r,$field_visible);
+									?>	
+								</tbody>
+								</table>
+							</div>
+						</div>
+					<div class="row">
+							<div class="col-xs-12">
+								<ul class="well">
+										 Haciendo click en <a href="documents/Summary_Regulation_Notice_2016.pdf">"Summary Regulations"</a> podrá visualizar el documento. Por favor leer en detalle y ante cualquier consulta, comuníquense con nosotros con antelación.
+								</ul>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<ul class="well">
+									<strong>Consideraciones</strong><br/>
+										Los alumnos deben presentarse 30 minutos antes del examen con su DNI o pasaporte (ORIGINAL Y VÁLIDO), lápiz, goma,lapicera y este horario ** Los teléfonos celulares, relojes y dispositivos electrónicos están ABSOLUTAMENTE PROHIBIDOS EN TODO MOMENTO Y LUGAR, incluso en salas de espera y recreos. No nos responsabilizamos por estos dispositivos. *** Lea atentamente los documentos adjuntos y la información sobre resultados (RESULTS INFORMATION), regístrese y conserve este horario para referencia futura. Los certificados estarán disponibles en el centro de exámenes desde el 13 de Julio, después de esa fecha se enviarán a las respectivas instituciones. 
+								</ul>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6">
+								<img src="../../assets/admin/layout3/img/logo-academia-7.jpg" alt="logo" >
+							</div>
+							<div class="col-xs-6">
+								<div class="well">
+									<address>
+									<strong>Contacto</strong><br/>
+										Eugenia Obrist: 03543 443030/0351 153450614 / admin.cambridge@aa.edu.ar
+									</address>
 								</div>
-								<div id="tab_2" class="tab-pane">
-									<div id="accordion2" class="panel-group">
-										<div class="panel panel-warning">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_1">
-												1. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry ? </a>
-												</h4>
-											</div>
-											<div id="accordion2_1" class="panel-collapse collapse in">
-												<div class="panel-body">
-													<p>
-														 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-													</p>
-													<p>
-														 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-danger">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_2">
-												2. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry ? </a>
-												</h4>
-											</div>
-											<div id="accordion2_2" class="panel-collapse collapse">
-												<div class="panel-body">
-													 Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-success">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_3">
-												3. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor ? </a>
-												</h4>
-											</div>
-											<div id="accordion2_3" class="panel-collapse collapse">
-												<div class="panel-body">
-													 Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_4">
-												4. Wolf moon officia aute, non cupidatat skateboard dolor brunch ? </a>
-												</h4>
-											</div>
-											<div id="accordion2_4" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_5">
-												5. Leggings occaecat craft beer farm-to-table, raw denim aesthetic ? </a>
-												</h4>
-											</div>
-											<div id="accordion2_5" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_6">
-												6. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth ? </a>
-												</h4>
-											</div>
-											<div id="accordion2_6" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_7">
-												7. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft ? </a>
-												</h4>
-											</div>
-											<div id="accordion2_7" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div id="tab_3" class="tab-pane">
-									<div id="accordion3" class="panel-group">
-										<div class="panel panel-danger">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#accordion3_1">
-												1. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry ? </a>
-												</h4>
-											</div>
-											<div id="accordion3_1" class="panel-collapse collapse in">
-												<div class="panel-body">
-													<p>
-														 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-													</p>
-													<p>
-														 Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-													</p>
-													<p>
-														 Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-													</p>
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-success">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#accordion3_2">
-												2. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry ? </a>
-												</h4>
-											</div>
-											<div id="accordion3_2" class="panel-collapse collapse">
-												<div class="panel-body">
-													 Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#accordion3_3">
-												3. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor ? </a>
-												</h4>
-											</div>
-											<div id="accordion3_3" class="panel-collapse collapse">
-												<div class="panel-body">
-													 Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#accordion3_4">
-												4. Wolf moon officia aute, non cupidatat skateboard dolor brunch ? </a>
-												</h4>
-											</div>
-											<div id="accordion3_4" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#accordion3_5">
-												5. Leggings occaecat craft beer farm-to-table, raw denim aesthetic ? </a>
-												</h4>
-											</div>
-											<div id="accordion3_5" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#accordion3_6">
-												6. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth ? </a>
-												</h4>
-											</div>
-											<div id="accordion3_6" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#accordion3_7">
-												7. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft ? </a>
-												</h4>
-											</div>
-											<div id="accordion3_7" class="panel-collapse collapse">
-												<div class="panel-body">
-													 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
+							</div>
+							<div class="col-xs-6" align="right">
+								<a class="btn btn-lg blue hidden-print margin-bottom-8" onclick="javascript:window.print();">
+								Imprimir <i class="fa fa-print"></i>
+								</a>
+							</div>
+						</div>
+
+							<div class="col-xs-8 invoice-block">
+								<!--<ul class="list-unstyled amounts">
+									<li>
+										<strong>Sub - Total amount:</strong> $9265
+									</li>
+									<li>
+										<strong>Discount:</strong> 12.9%
+									</li>
+									<li>
+										<strong>VAT:</strong> -----
+									</li>
+									<li>
+										<strong>Grand Total:</strong> $12489
+									</li>
+								</ul>-->
+								
+								
+								
+								
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			
-			
+			<!-- END PAGE CONTENT INNER -->
+		</div>
+	</div>
+	<!-- END PAGE CONTENT -->
+
+
+
 			
 			<!-- BEGIN POPOVERS PORTLET-->			
 					<!-- END POPOVERS PORTLET-->
@@ -723,19 +635,40 @@ function place_info($r){
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="../../assets/global/plugins/jstree/dist/jstree.min.js"></script>
-<!-- END PAGE LEVEL SCRIPTS -->
-<script src="../../assets/admin/pages/scripts/ui-tree.js"></script>
-<script src="../../assets/global/scripts/metronic.js" type="text/javascript"></script>
-<script src="../../assets/admin/layout3/scripts/layout.js" type="text/javascript"></script>
-<script src="../../assets/admin/layout3/scripts/demo.js" type="text/javascript"></script>
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script type="text/javascript"
+	src="../../assets/global/plugins/select2/select2.min.js"></script>
+<script type="text/javascript"
+	src="../../assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+	src="../../assets/global/plugins/datatables/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
+<script type="text/javascript"
+	src="../../assets/global/plugins/datatables/extensions/ColReorder/js/dataTables.colReorder.min.js"></script>
+<script type="text/javascript"
+	src="../../assets/global/plugins/datatables/extensions/Scroller/js/dataTables.scroller.min.js"></script>
+<script type="text/javascript"
+	src="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
+<!-- END PAGE LEVEL PLUGINS -->
+
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="../../assets/global/scripts/metronic.js"
+	type="text/javascript"></script>
+<script src="../../assets/admin/layout3/scripts/layout.js"
+	type="text/javascript"></script>
+<script src="../../assets/admin/layout3/scripts/demo.js"
+	type="text/javascript"></script>
+<script src="../../assets/admin/pages/scripts/table-advanced.js"></script>
+
 
 <script>
 jQuery(document).ready(function() {       
   // initiate layout and plugins
   Metronic.init(); // init metronic core components
+  TableAdvanced.init();
   Layout.init(); // init current layout
   Demo.init(); // init demo features
   UITree.init();
+
 });
 
 //--START JAVASCRIPT FUNCTIONS--

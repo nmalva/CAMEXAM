@@ -55,6 +55,8 @@ var TableManaged = function () {
                 "orderable": false
             }, {
                 "orderable": false
+            }, {
+                "orderable": false
             }],
             "lengthMenu": [
                 [7, 25, 50, -1],

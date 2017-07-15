@@ -6,7 +6,7 @@ require_once ("../classes/class.bd.php");
 
 $can_dni = $_POST["can_dni"];
 
-$sql = "SELECT * FROM Candidate WHERE can_dni='{$can_dni}'";
+$sql = "SELECT * FROM Candidate WHERE can_dni='{$can_dni}' ORDER BY can_id DESC";
 
 
 $bd = new BD();
