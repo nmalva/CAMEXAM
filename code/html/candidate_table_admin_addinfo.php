@@ -85,19 +85,21 @@ function write_candidate($session_prc_id, $get_exa_id, $field_visible){
         $line.="<td style='color:{$color};'>{$r["prc_name"]}</td>";
         $line.="<td style='color:{$color};'><input type='text' onfocusout='updateCandidateNum({$r["can_id"]},this.value);' value='{$r["can_candidatenum"]}'></td>";
         $line.="<td style='color:{$color};'><input type='text' onfocusout='updatePackingCode({$r["can_id"]},this.value);' value='{$r["epa_packingcode"]}'></td>";
-        $line.="<td style='color:{$color}; display:{$field_visible["listening"]};'><input type='text' );' value='{$r["can_timelistening"]}'></td>";
-        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timespeaking"]}'></td>";
-        $line.="<td style='color:{$color};'><input type='text' );' value='{$date_speaking}'></td>";
-        $line.="<td style='color:{$color}; display:{$field_visible["writing"]};'><input type='text' );' value='{$r["can_timewriting"]}'></td>";
-        $line.="<td style='color:{$color}; display:{$field_visible["reading"]};'><input type='text' );' value='{$r["can_timereading"]}'></td>";
+        
         $line.="<td style='color:{$color}; display:{$field_visible["readingandwriting"]};'><input type='text' );' value='{$r["can_timereadingandwriting"]}'></td>";
         $line.="<td style='color:{$color}; display:{$field_visible["readinganduseofenglish"]};'><input type='text' );' value='{$r["can_timereadinganduseofenglish"]}'></td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["writing"]};'><input type='text' );' value='{$r["can_timewriting"]}'></td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["listening"]};'><input type='text' );' value='{$r["can_timelistening"]}'></td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["reading"]};'><input type='text' );' value='{$r["can_timereading"]}'></td>";
+        $line.="<td style='color:{$color};'><input type='text' );' value='{$date_speaking}'></td>";        
+        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timespeaking"]}'></td>";
         $line.="</tr>";
          
          echo $line;
-      }		
-      
+      }		      
     }
+
+
     
  function getOption()
     {
@@ -488,14 +490,14 @@ function field_visible($exa_id){
 										    <th>Prep. Centre</th> 	
 											<th>Candidate #</th>
 											<th>Packing Code</th>
+                                            <th style="display: <?php echo $field_visible["readingandwriting"];?>">Time Reading and Writing</th>
+                                            <th style="display: <?php echo $field_visible["readinganduseofenglish"];?>">Time Reading and Use of English</th>
+                                            <th style="display: <?php echo $field_visible["writing"];?>">Time Writing</th>
 											<th style="display: <?php echo $field_visible["listening"];?>">Time Listening</th>
-											<th>Time Speaking</th>
+                                            <th style="display: <?php echo $field_visible["reading"];?>">Time Reading</th>
                                             <th>Date Speaking</th>
-											<th style="display: <?php echo $field_visible["writing"];?>">Time Writing</th>
-											<th style="display: <?php echo $field_visible["reading"];?>">Time Reading</th>
-											<th style="display: <?php echo $field_visible["readingandwriting"];?>">Time Reading and Writing</th>
-											<th style="display: <?php echo $field_visible["readinganduseofenglish"];?>">Time Reading and Use of English</th>
-										
+											<th>Time Speaking</th>
+                                            
 										</tr>
 									</thead>
 							<tbody>
