@@ -58,7 +58,6 @@ $class_utiles=new utiles();
             <ul class='list-group'>
                 <li class='list-group-item'> Deadline: {$class_utiles->fecha_mysql_php($exam_info["exa_deadlineshow"])}</li>
                 <li class='list-group-item'> Date Exam: <a href='candidate_table_admin_warnings.php?date={$exam_info["exa_date"]}'> {$class_utiles->fecha_mysql_php($exam_info["exa_date"])}</a></li>
-                <li class='list-group-item'> View Candidate Schedules: <a href='exam_info_all.php?exa_id={$get_exa_id}'> Schedules </a></li>
             </ul>
         </div>
         ";
