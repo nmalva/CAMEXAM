@@ -8,7 +8,7 @@ include_once ("../classes/class.utiles.php");
 $session_use_usertype=$_SESSION["use_usertype"];
 $class_utiles=new utiles();
 
-
+//
 
 $array_ids= $_POST["ids"];
 $init_value = $_POST["init_value"];
@@ -25,7 +25,7 @@ $can_timereadingandwriting= $_POST["can_timereadingandwriting"];
 $can_timereadinganduseofe =$_POST["can_timereadinganduseofe"];
 $can_datespeaking = $_POST["can_datespeaking"];
 
-echo $set;
+//echo $set;
 $quantity = count($array_ids);
 $time_listening="08:23:01"; 
 
@@ -38,9 +38,13 @@ if($set=="set_candidate"){
 if($set=="set_packingcode"){
     updatePackingcode($array_ids, $quantity, $epa_id);
 }
+if($set=="set_packingcode_speaking"){
+    updatePackingcodespeaking($array_ids, $quantity, $epa_id);
+}
 if($set=="set_timespeaking"){
     updateTimespeaking($array_ids, $quantity, $time_start_speaking, $time_interval, $time_group, $can_datespeaking);
 }
+
 if($set=="set_timevarious"){
    updateTimelistening($array_ids, $quantity, $can_timelistening);
    updateTimewriting($array_ids, $quantity, $can_timewriting);
@@ -66,6 +70,13 @@ function updatePackingcode($array_ids, $quantity, $epa_id){
     for ($i=0; $i<$quantity; $i++){
         $class_candidate[$i]= new Candidate($array_ids[$i]);
         $class_candidate[$i]->setEpa_id($epa_id);
+    }
+}
+function updatePackingcodespeaking($array_ids, $quantity, $epa_id){
+
+     for ($i=0; $i<$quantity; $i++){
+        $class_candidate[$i]= new Candidate($array_ids[$i]);
+        $class_candidate[$i]->setCan_packingcodespeaking($epa_id);
     }
 }
 function updateTimespeaking($array_ids, $quantity, $time_start_speaking,$time_interval, $time_group, $can_datespeaking){

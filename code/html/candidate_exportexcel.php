@@ -104,7 +104,7 @@ $sql = "SELECT * FROM Candidate
         INNER JOIN ExamPlace ON Candidate.exp_id=ExamPlace.exp_id
         LEFT JOIN ExamPlaceAula ON Candidate.epa_id=ExamPlaceAula.epa_id
         WHERE exa_id='{$get_exa_id}' AND can_status='2'
-        ORDER BY ExamPlace.exp_name ASC, PrepCentre.prc_name ASC, Candidate.can_lastname ASC"; // can_status=1 --> confirmed
+        ORDER BY Candidate.can_candidatenum ASC, ExamPlace.exp_name ASC, PrepCentre.prc_name ASC, Candidate.can_lastname ASC"; // can_status=1 --> confirmed
 $resultado=$class_bd->ejecutar($sql);
 $i=2;
 while ($line = $class_bd->retornar_fila($resultado)){
@@ -171,6 +171,7 @@ $objPHPExcel->setActiveSheetIndex(0);
 header('Content-Type: application/vnd.ms-excel');
 header('Content-Disposition: attachment;filename='.$file_name.'_external.xls');
 header('Cache-Control: max-age=0');
+
 // If you're serving to IE 9, then the following may be needed
 //header('Cache-Control: max-age=1');
 

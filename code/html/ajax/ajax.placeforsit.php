@@ -8,7 +8,10 @@ $session_prc_id=$_SESSION["prc_id"];
 $session_use_usertype=$_SESSION["use_usertype"];
 $get_exa_id=$_POST["exa_id"];
 $class_utiles=new utiles();
- 
+if ($_SESSION["use_usertype"]!=1)
+    $field_visible["schedule_admin"]="none";
+
+
  Function getPlaceForSit($get_exa_id){
      $class_bd=new bd();
      $sql="SELECT * FROM PlaceForSit INNER JOIN ExamPlace on PlaceForSit.exp_id=ExamPlace.exp_id WHERE exa_id={$get_exa_id}";
@@ -59,6 +62,7 @@ $class_utiles=new utiles();
                 <li class='list-group-item'> Deadline: {$class_utiles->fecha_mysql_php($exam_info["exa_deadlineshow"])}</li>
                 <li class='list-group-item'> Date Exam: <a href='candidate_table_admin_warnings.php?date={$exam_info["exa_date"]}'> {$class_utiles->fecha_mysql_php($exam_info["exa_date"])}</a></li>
                 <li class='list-group-item'> View Candidate Schedules: <a href='exam_info_all.php?exa_id={$get_exa_id}'> Schedules </a></li>
+                <li class='list-group-item' style='display:{$field_visible["schedule_admin"]};'> View Candidate Schedules Admin: <a href='exam_info_all_admin.php?exa_id={$get_exa_id}'> Schedules </a></li>
             </ul>
         </div>
         ";

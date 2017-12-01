@@ -5,7 +5,7 @@ class bd
   private $servidor="localhost";
   private $usuario="nmalva_nmalva";
   private $clave="Wara1441";
-  private $basededatos="nmalva_bec";
+  private $basededatos="nmalva_camexam_demo_2";
   private $conexion;
 
   function __construct()

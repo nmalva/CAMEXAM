@@ -127,7 +127,6 @@ function insert(){
 
 function update(){
     global $campos;
-    
     $class_candidate= new Candidate($campos["can_id"]);
     $class_candidate->setCan_dni($campos["can_dni"]);
     $class_candidate->setCan_firstname($campos["can_firstname"]);
@@ -135,6 +134,7 @@ function update(){
     $class_candidate->setCan_gender($campos["can_gender"]);
     $class_candidate->setCan_datebirth($campos["can_datebirth"]);
     $class_candidate->setCan_email($campos["can_email"]);
+
     $class_candidate->setCan_adress($campos["can_adress"]);
     $class_candidate->setCan_telephone($campos["can_telephone"]);
     $class_candidate->setCan_cellphone($campos["can_cellphone"]);
@@ -146,7 +146,10 @@ function update(){
    // $class_candidate->setExa_id($campos["exa_id"]);
     $class_candidate->setCan_candidatetype($campos["can_candidatetype"]);
     $class_candidate->setCan_candidatenum($campos["can_candidatenum"]);
-    $class_candidate->setCan_packingcode($campos["can_packingcode"]);
+
+    //$class_candidate->setCan_packingcode($campos["can_packingcode"]);
+
+   
 }
 
 function delete($can_id){

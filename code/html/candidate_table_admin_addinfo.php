@@ -32,6 +32,8 @@ function getExaInfo($exa_id){
     $r=$class_bd->retornar_fila($resultado);   
 	echo "{$r["tye_name"]} Exam <small>( {$class_utiles->fecha_mysql_php($r["exa_date"])})</small>";	
 }
+
+
 function write_candidate($session_prc_id, $get_exa_id, $field_visible){
     $class_bd=new bd();
     $class_utiles= new utiles();
@@ -40,7 +42,9 @@ function write_candidate($session_prc_id, $get_exa_id, $field_visible){
                    INNER JOIN ExamPlace on Candidate.exp_id=ExamPlace.exp_id
                    INNER JOIN PrepCentre on Candidate.prc_id=PrepCentre.prc_id
                    LEFT OUTER JOIN ExamPlaceAula on Candidate.epa_id=ExamPlaceAula.epa_id
-                   WHERE exa_id={$get_exa_id}";
+                   WHERE exa_id={$get_exa_id} 
+                   ORDER BY ExamPlace.exp_name,PrepCentre.prc_name,Candidate.can_candidatenum ASC";
+                   
     $resultado=$class_bd->ejecutar($sql);
     $i=1;
     while ($r=$class_bd->retornar_fila($resultado))
@@ -53,6 +57,11 @@ function write_candidate($session_prc_id, $get_exa_id, $field_visible){
             $color="#3fa785";
         if ($r["can_status"]==3)
             $color="#D26380";
+
+        if($r["can_timespeaking"]==NULL || $r["can_timespeaking"]=="0" )
+            $color_speaking="";
+        else
+            $color_speaking="#EDCDC9";
         
         if ($r["can_gender"]==0)
             $can_gender="Female";
@@ -74,25 +83,34 @@ function write_candidate($session_prc_id, $get_exa_id, $field_visible){
         }else
             $date_speaking= $class_utiles->fecha_mysql_php($r["can_datespeaking"]);
 
+        if($r["can_datespeaking"]==NULL || $r["can_datespeaking"]=="0" )
+            $can_packingcodespeaking = "";
+        else
+            $can_packingcodespeaking = get_newepaname($r["can_packingcodespeaking"]);
 
 
-        $line="<tr class='odd gradeX'>"; 
+
+        $line="<tr class='odd gradeX' style='background-color:{$color_speaking}';>"; 
         $line.="<td> <input type='checkbox' name='check' id='{$r["can_id"]}' class='checkboxes' value='{$r["can_id"]}'/></td>";
         $line.="<td style='color:{$color};'>{$r["can_id"]}</td>";
         $line.="<td style='color:{$color};'>{$r["can_firstname"]}</td>";
         $line.="<td style='color:{$color};'>{$r["can_lastname"]}</td>";
         $line.="<td style='color:{$color};'>{$r["exp_name"]}</td>";
         $line.="<td style='color:{$color};'>{$r["prc_name"]}</td>";
-        $line.="<td style='color:{$color};'><input type='text' onfocusout='updateCandidateNum({$r["can_id"]},this.value);' value='{$r["can_candidatenum"]}'></td>";
-        $line.="<td style='color:{$color};'><input type='text' onfocusout='updatePackingCode({$r["can_id"]},this.value);' value='{$r["epa_packingcode"]}'></td>";
+        //esta lĂ­nea permite que el can_id sea editable $line.="<td style='color:{$color};'><input type='text' onfocusout='updateCandidateNum({$r["can_id"]},this.value);' value='{$r["can_candidatenum"]}'></td>";
+        $line.="<td style='color:{$color};'>{$r["can_candidatenum"]}</td>";
+        $line.="<td style='color:{$color};'>{$r["epa_packingcode"]}</td>";
+
+        $line.="<td style='color:{$color};'>{$date_speaking}</td>";        
+        $line.="<td style='color:{$color};'>{$r["can_timespeaking"]}</td>";
+        $line.="<td style='color:{$color};'>{$can_packingcodespeaking}</td>";
         
-        $line.="<td style='color:{$color}; display:{$field_visible["readingandwriting"]};'><input type='text' );' value='{$r["can_timereadingandwriting"]}'></td>";
-        $line.="<td style='color:{$color}; display:{$field_visible["readinganduseofenglish"]};'><input type='text' );' value='{$r["can_timereadinganduseofenglish"]}'></td>";
-        $line.="<td style='color:{$color}; display:{$field_visible["writing"]};'><input type='text' );' value='{$r["can_timewriting"]}'></td>";
-        $line.="<td style='color:{$color}; display:{$field_visible["listening"]};'><input type='text' );' value='{$r["can_timelistening"]}'></td>";
-        $line.="<td style='color:{$color}; display:{$field_visible["reading"]};'><input type='text' );' value='{$r["can_timereading"]}'></td>";
-        $line.="<td style='color:{$color};'><input type='text' );' value='{$date_speaking}'></td>";        
-        $line.="<td style='color:{$color};'><input type='text' );' value='{$r["can_timespeaking"]}'></td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["readingandwriting"]};'>{$r["can_timereadingandwriting"]}</td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["readinganduseofenglish"]};'>{$r["can_timereadinganduseofenglish"]}</td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["writing"]};'>{$r["can_timewriting"]}</td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["listening"]};'>{$r["can_timelistening"]}</td>";
+        $line.="<td style='color:{$color}; display:{$field_visible["reading"]};'>{$r["can_timereading"]}</td>";
+
         $line.="</tr>";
          
          echo $line;
@@ -128,6 +146,17 @@ function field_visible($exa_id){
 
     return $fild_visible;    
 }
+
+function get_newepaname($can_packingcodespeaking){
+    $class_bd1 = new bd();
+    $sql="SELECT * FROM ExamPlaceAula
+        WHERE epa_id = {$can_packingcodespeaking}";
+        $resultado = $class_bd1->ejecutar($sql);
+        $r=$class_bd1->retornar_fila($resultado);
+
+        return ($r["epa_packingcode"]."-".$r["epa_name"]);
+}
+
 ?>
 <head>
 
@@ -225,7 +254,7 @@ function field_visible($exa_id){
 		<!-- END PAGE HEAD -->
 		<!-- BEGIN PAGE CONTENT -->
 		<div class="page-content">
-			<div class="container">
+			<div class="container-fluid">
 				<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 				<div class="modal fade" id="portlet-config" tabindex="-1"
 					role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -251,8 +280,30 @@ function field_visible($exa_id){
 				<!-- BEGIN PAGE BREADCRUMB -->
         			<ul class="page-breadcrumb breadcrumb">
         				<li>
-        					<a href="candidate_table_admin.php?exa_id=<?php echo $get_exa_id;?>">Return</a>
+        					<a href="candidate_table_admin.php?exa_id=<?php echo $get_exa_id;?>">Return</a><i class="fa fa-circle"></i>
         				</li>
+
+
+                        <li>
+                            <a href="javascript:export_excel_listening(<?php echo $get_exa_id;?>);">Listening</a><i class="fa fa-circle"></i>
+                        </li>
+                        <li>
+                            <a href="javascript:export_excel_speaking(<?php echo $get_exa_id;?>);">Speaking</a><i class="fa fa-circle"></i>
+                        </li>
+                        <li>
+                            <a href="javascript:export_excel_writing(<?php echo $get_exa_id;?>);">Writing</a><i class="fa fa-circle"></i>
+                        </li>
+                        <li>
+                            <a href="javascript:export_excel_reading(<?php echo $get_exa_id;?>);">Reading</a><i class="fa fa-circle"></i>
+                        </li>
+                        <li>
+                            <a href="javascript:export_excel_rw(<?php echo $get_exa_id;?>);">R&W</a><i class="fa fa-circle"></i>
+                        </li>
+                        <li>
+                        <a href="javascript:export_excel_rue(<?php echo $get_exa_id;?>);">R&UE</a><i class="fa fa-circle"></i>
+                        </li>
+
+
         			</ul>
         			
         			
@@ -382,7 +433,7 @@ function field_visible($exa_id){
         												</span>
         											</div>
         										</div>
-        										<label class="control-label col-md-1" style="display: <?php echo $field_visible['readinganduseofenglish'];?>">R&E</label>
+        										<label class="control-label col-md-1" style="display: <?php echo $field_visible['readinganduseofenglish'];?>">R&UoE</label>
         										<div class="col-md-3" style="display: <?php echo $field_visible['readinganduseofenglish'];?>">
         											<div class="input-group">
         												<input type="text" class="form-control timepicker timepicker-24" id='can_timereadinganduseofe' name='can_timereadinganduseofe'>
@@ -445,6 +496,25 @@ function field_visible($exa_id){
                                                     </span>
                                                 </div>
                                             </div>
+
+
+                                             <div class="form-group">
+                                             <label class="control-label col-md-1">Diferent </label>
+                                             <div class="col-md-7">
+                                                    <div class="input-group">
+                                                        <div class="input-icon">
+                                                                <select name="epa_id_speaking" id="epa_id_speaking" data-placeholder="Select Packing Code" class="form-control">
+                                                                  <?php  getOption();?>
+                                                                </select>                                                   
+                                                        </div>
+                                                        <span class="input-group-btn">
+                                                           <button id="genpassword" class="btn btn-success" type="button" onclick="set_packingcode_speaking();"><i class="fa fa-arrow-left fa-fw"/></i> Set</button>
+                                                        </span>
+                                                        
+                                                    </div>
+                                             </div>
+                                            </div>
+
                                         </div>
                                     </div>
         			             </div>  			             
@@ -488,15 +558,17 @@ function field_visible($exa_id){
 											<th>Last Name</th>
 											<th>Venue</th>
 										    <th>Prep. Centre</th> 	
-											<th>Candidate #</th>
-											<th>Packing Code</th>
-                                            <th style="display: <?php echo $field_visible["readingandwriting"];?>">Time Reading and Writing</th>
-                                            <th style="display: <?php echo $field_visible["readinganduseofenglish"];?>">Time Reading and Use of English</th>
-                                            <th style="display: <?php echo $field_visible["writing"];?>">Time Writing</th>
-											<th style="display: <?php echo $field_visible["listening"];?>">Time Listening</th>
-                                            <th style="display: <?php echo $field_visible["reading"];?>">Time Reading</th>
-                                            <th>Date Speaking</th>
-											<th>Time Speaking</th>
+											<th>Can #</th>
+											<th>P. Code</th>
+                                            <th>Date S.</th>
+                                            <th>Time S.</th>
+                                            <th>P. Code S.</th>
+                                            <th style="display: <?php echo $field_visible["readingandwriting"];?>">Time R&W</th>
+                                            <th style="display: <?php echo $field_visible["readinganduseofenglish"];?>">Time R&UoE</th>
+                                            <th style="display: <?php echo $field_visible["writing"];?>">Time W.</th>
+											<th style="display: <?php echo $field_visible["listening"];?>">Time L.</th>
+                                            <th style="display: <?php echo $field_visible["reading"];?>">Time R.</th>
+                                      
                                             
 										</tr>
 									</thead>
@@ -600,13 +672,53 @@ function redirect(can_id){
 function redireccionar(pagina) {
     location.href=pagina;	          
 }   
-function export_excel(exa_id){
-	mensaje =	"Do you want to export this table to Excel Format?";
-	confirmar=confirm(mensaje); 
-	if (confirmar) {			
-		var pagina = 'candidate_exportexcel.php?exa_id='+exa_id;
-		document.location.href= pagina;
-	}
+function export_excel_listening(exa_id){
+    mensaje =   "Do you want to export this table to Excel Format?";
+    confirmar=confirm(mensaje); 
+    if (confirmar) {            
+        var pagina = 'candidate_exportexcel_list_listening.php?exa_id='+exa_id;
+        document.location.href= pagina;
+    }
+}
+function export_excel_speaking(exa_id){
+    mensaje =   "Do you want to export this table to Excel Format?";
+    confirmar=confirm(mensaje); 
+    if (confirmar) {            
+        var pagina = 'candidate_exportexcel_list_speaking.php?exa_id='+exa_id;
+        document.location.href= pagina;
+    }
+}
+function export_excel_writing(exa_id){
+    mensaje =   "Do you want to export this table to Excel Format?";
+    confirmar=confirm(mensaje); 
+    if (confirmar) {            
+        var pagina = 'candidate_exportexcel_list_writing.php?exa_id='+exa_id;
+        document.location.href= pagina;
+    }
+}
+function export_excel_reading(exa_id){
+    mensaje =   "Do you want to export this table to Excel Format?";
+    confirmar=confirm(mensaje); 
+    if (confirmar) {            
+        var pagina = 'candidate_exportexcel_list_reading.php?exa_id='+exa_id;
+        document.location.href= pagina;
+    }
+}
+function export_excel_rue(exa_id){
+    mensaje =   "Do you want to export this table to Excel Format?";
+    confirmar=confirm(mensaje); 
+    if (confirmar) {            
+        var pagina = 'candidate_exportexcel_list_r&ue.php?exa_id='+exa_id;
+        document.location.href= pagina;
+    }
+}
+function export_excel_rw(exa_id){
+    mensaje =   "Do you want to export this table to Excel Format?";
+    confirmar=confirm(mensaje); 
+    if (confirmar) {            
+        var pagina = 'candidate_exportexcel_list_r&w.php?exa_id='+exa_id;
+        document.location.href= pagina;
+    }
 }
 function updateStatus(can_id, can_status){
 	//showUpdateCheck();
@@ -697,6 +809,34 @@ function set_packingcode(){
             toast("Packing Code");  
           }
        });
+}
+
+function set_packingcode_speaking(){
+    var ids;
+    var epa_id_speaking;
+    var set;
+    
+    ids = $('input[type=checkbox]:checked').map(function() {
+        return $(this).attr('id');
+       }).get();  
+    epa_id_speaking= this.document.getElementById("epa_id_speaking").value        
+    set="set_packingcode_speaking";
+    
+
+    
+    mensaje =   "Warning! - You are changing the Packing Code of the Speaking Paper to the selected items. Are you sure???";
+    confirmar=confirm(mensaje); 
+    if (confirmar) {    
+         $.ajax({
+            url:"../abm/abm.candidate_parameters.php",
+            type: "POST",
+            data:{ids:ids, epa_id:epa_id_speaking, set:set},
+            success: function(opciones){ 
+               //alert(opciones); 
+               toast("Packing Code");  
+              }
+           });
+    }
 }
 
 function set_cantimespeaking(){

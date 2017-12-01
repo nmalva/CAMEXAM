@@ -69,7 +69,19 @@ function get_candidate($can_id){
     	ORDER BY can_id ASC";
     $resultado = $class_bd->ejecutar($sql);
     $r=$class_bd->retornar_fila($resultado);
+
     return ($r);
+
+}
+
+function get_newepaname($can_packingcodespeaking){
+    $class_bd1 = new bd();
+    $sql="SELECT * FROM ExamPlaceAula
+        WHERE epa_id = {$can_packingcodespeaking}";
+        $resultado = $class_bd1->ejecutar($sql);
+        $r=$class_bd1->retornar_fila($resultado);
+
+        return ($r["epa_name"]);
 }
 
 function exp_datos($epa_id){
@@ -84,14 +96,61 @@ function exp_datos($epa_id){
 }
 
 function type_exam($tye_id){
-	$class_bd = new bd();
+	$class_bd3 = new bd();
 	$sql="SELECT * FROM TypeExam 
 		  WHERE tye_id={$tye_id}";
-    $resultado=$class_bd->ejecutar($sql);
-    $r=$class_bd->retornar_fila($resultado);   
+    $resultado=$class_bd3->ejecutar($sql);
+    $r=$class_bd3->retornar_fila($resultado);   
     return ($r["tye_name"]);
 
 }
+
+
+function time_array_order_speaking($can_id){
+	$class_bd2 = new bd();
+	$sql="SELECT * FROM Candidate 
+		  WHERE can_id={$can_id}";
+    $resultado=$class_bd2->ejecutar($sql);
+    $r=$class_bd2->retornar_fila($resultado);  
+
+    $time_array = array(
+
+    	0 => strtotime($r["can_timelistening"]),
+    	1 => strtotime($r["can_timereadingandwriting"]),
+    	2 => strtotime($r["can_timereadinganduseofenglish"]),
+    	3 => strtotime($r["can_timereading"]),
+    	4 => strtotime($r["can_timewriting"]),
+    	5 => strtotime($r["can_timespeaking"]),
+
+    );
+
+    asort($time_array);
+
+	return (array_keys($time_array));
+}
+
+function time_array_order_nospeaking($can_id){
+	$class_bd2 = new bd();
+	$sql="SELECT * FROM Candidate 
+		  WHERE can_id={$can_id}";
+    $resultado=$class_bd2->ejecutar($sql);
+    $r=$class_bd2->retornar_fila($resultado);  
+
+    $time_array = array(
+
+    	0 => strtotime($r["can_timelistening"]),
+    	1 => strtotime($r["can_timereadingandwriting"]),
+    	2 => strtotime($r["can_timereadinganduseofenglish"]),
+    	3 => strtotime($r["can_timereading"]),
+    	4 => strtotime($r["can_timewriting"]),
+
+    );
+
+    asort($time_array);
+
+	return (array_keys($time_array));
+}
+
 function exam_info($r,$field_visible){
 $class_utiles=new utiles();
 $date_exam = $class_utiles->fecha_mysql_php($r["exa_date"]);
@@ -104,22 +163,38 @@ else
 	$date_speaking = $class_utiles->fecha_mysql_php($r["can_datespeaking"]);
 
 
-$fecha = $class_utiles->compararFechas($r["can_datespeaking"],$r["exa_date"]); //2 --> fecha 1 > fecha 2
+
+if($r["can_packingcodespeaking"]== NULL || $r["can_packingcodespeaking"]=="0"){
+	$epa_name = $r["epa_name"];
+	$new_exp_adress = $exp_datos["exp_adress"];
+	$new_exp_name = $exp_datos["exp_name"];
+}
+else{
+	$epa_name = get_newepaname($r["can_packingcodespeaking"]);
+	$new_expdatos_function = exp_datos ($r["can_packingcodespeaking"]);
+	$new_exp_adress = $new_expdatos_function["exp_adress"];
+	$new_exp_name = $new_expdatos_function["exp_name"];
+}
 
 
-if ($fecha ==0 ){
-     echo "<tr'>
-     	    <td width='200px'>Speaking </td>
-     		<td> {$r["can_timespeaking"]} hs</td>
-     		<td> {$date_speaking}</td>
+
+if($r["can_datespeaking"]== NULL || $r["can_datespeaking"]=="0000-00-00" )
+	$fecha = 1; // if can_datespeaking is Null, same day so order by tima.
+else
+	$fecha = $class_utiles->compararFechas($r["can_datespeaking"],$r["exa_date"]); //2 --> fecha 1 > fecha 2
+
+
+  
+  $filds_array[0]= "<tr style='display:{$field_visible["listening"]};'>
+     	    <td width='200px'>Listening </td>
+     		<td> {$r["can_timelistening"]} hs</td>
+     		<td> {$date_exam}</td>
      		<td> {$exp_datos["exp_name"]}</td>
      		<td> {$exp_datos["exp_adress"]}</td>
      		<td> {$r["epa_name"]}</td>
-     	 </tr>";
-}
-  
+  </tr>";
 
- echo "<tr style='display:{$field_visible["readingandwriting"]};'>
+ $filds_array[1]= "<tr style='display:{$field_visible["readingandwriting"]};'>
      	    <td width='200px'>Reading and Writing </td>
      		<td> {$r["can_timereadingandwriting"]} hs</td>
      		<td> {$date_exam}</td>
@@ -128,7 +203,7 @@ if ($fecha ==0 ){
      		<td> {$r["epa_name"]}</td>
      	 </tr>";
 
- echo "<tr style='display:{$field_visible["readinganduseofenglish"]};'>
+ $filds_array[2]= "<tr style='display:{$field_visible["readinganduseofenglish"]};'>
      	    <td width='200px'>Reading and use of English </td>
      		<td> {$r["can_timereadinganduseofenglish"]} hs</td>
      		<td> {$date_exam}</td>
@@ -137,7 +212,7 @@ if ($fecha ==0 ){
      		<td> {$r["epa_name"]}</td>
      	 </tr>";
 
-  echo "<tr style='display:{$field_visible["reading"]};'>
+  $filds_array[3]= "<tr style='display:{$field_visible["reading"]};'>
      	    <td width='200px'>Reading</td>
      		<td> {$r["can_timereading"]} hs</td>
      		<td> {$date_exam}</td>
@@ -146,7 +221,7 @@ if ($fecha ==0 ){
      		<td> {$r["epa_name"]}</td>
      	 </tr>";
 
-   echo "<tr style='display:{$field_visible["writing"]};'>
+   $filds_array[4]= "<tr style='display:{$field_visible["writing"]};'>
      	    <td width='200px'>Writing </td>
      		<td> {$r["can_timewriting"]} hs</td>
      		<td> {$date_exam}</td>
@@ -155,24 +230,34 @@ if ($fecha ==0 ){
      		<td> {$r["epa_name"]}</td>
      	 </tr>";
 
-     echo "<tr style='display:{$field_visible["listening"]};'>
-     	    <td width='200px'>Listening </td>
-     		<td> {$r["can_timelistening"]} hs</td>
-     		<td> {$date_exam}</td>
-     		<td> {$exp_datos["exp_name"]}</td>
-     		<td> {$exp_datos["exp_adress"]}</td>
-     		<td> {$r["epa_name"]}</td>
-     	 </tr>";
-
-if ($fecha>0){
-     echo "<tr'>
-     	    <td width='200px'>Speaking </td>
+   $filds_array[5] = "<tr'>
+     	    <td width='200px'>Speaking</td>
      		<td> {$r["can_timespeaking"]} hs</td>
      		<td> {$date_speaking}</td>
-     		<td> {$exp_datos["exp_name"]}</td>
-     		<td> {$exp_datos["exp_adress"]}</td>
-     		<td> {$r["epa_name"]}</td>
+     		<td> {$new_exp_name}</td>
+     		<td> {$new_exp_adress}</td>
+     		<td> {$epa_name}</td>
      	 </tr>";
+
+
+if ($fecha ==1 ){ // f1=f2
+	$time_array= time_array_order_speaking($r["can_id"]);
+	for ($i=0;$i<=5;$i++){
+		echo $filds_array[$time_array[$i]];
+	}
+}elseif ($fecha == 2) {  //> f1 de f2
+	$time_array= time_array_order_nospeaking($r["can_id"]);
+   for ($i=0;$i<=4;$i++){
+		echo $filds_array[$time_array[$i]];
+	}
+	echo $filds_array[5];
+
+}elseif ($fecha == 0){   //f1 < f2
+	$time_array= time_array_order_nospeaking($r["can_id"]);
+	echo $filds_array[5];
+	for ($i=0;$i<=4;$i++){
+		echo $filds_array[$time_array[$i]];
+	}
 }
   
 
@@ -549,10 +634,10 @@ function place_info($r){
 								</table>
 							</div>
 						</div>
-					<div class="row">
+						<div class="row">
 							<div class="col-xs-12">
 								<ul class="well">
-										 Haciendo click en <a href="documents/Summary_Regulation_Notice_2016.pdf">"Summary Regulations"</a> podrá visualizar el documento. Por favor leer en detalle y ante cualquier consulta, comuníquense con nosotros con antelación.
+										 Haciendo click en <a href="documents/notice_adolescentes_adultos.pdf">"Notice to candidates Exámenes para adolescentes y adultos"</a> podrá visualizar el documento. Haciendo click en <a href="documents/flyer.pdf">"Starters -  Movers - Flyers en castellano"</a> podrá visualizar el documento. Por favor leer en detalle y ante cualquier consulta, comuníquense con nosotros con antelación.
 								</ul>
 							</div>
 						</div>
@@ -560,7 +645,7 @@ function place_info($r){
 							<div class="col-xs-12">
 								<ul class="well">
 									<strong>Consideraciones</strong><br/>
-										Los alumnos deben presentarse 30 minutos antes del examen con su DNI o pasaporte (ORIGINAL Y VÁLIDO), lápiz, goma,lapicera y este horario ** Los teléfonos celulares, relojes y dispositivos electrónicos están ABSOLUTAMENTE PROHIBIDOS EN TODO MOMENTO Y LUGAR, incluso en salas de espera y recreos. No nos responsabilizamos por estos dispositivos. *** Lea atentamente los documentos adjuntos y la información sobre resultados (RESULTS INFORMATION), regístrese y conserve este horario para referencia futura. Los certificados estarán disponibles en el centro de exámenes desde el 13 de Julio, después de esa fecha se enviarán a las respectivas instituciones. 
+										Los alumnos deben presentarse 30 minutos antes del examen con su DNI o pasaporte (ORIGINAL Y VÁLIDO), lápiz, goma,lapicera y este horario ** Los teléfonos celulares, relojes y dispositivos electrónicos están ABSOLUTAMENTE PROHIBIDOS EN TODO MOMENTO Y LUGAR, incluso en salas de espera y recreos. No nos responsabilizamos por estos dispositivos.
 								</ul>
 							</div>
 						</div>

@@ -652,7 +652,11 @@ function getOptionPrepCentre($prc_id_user, $prc_id_candidate) //this is for chan
                 							</form>
                 							<!-- END FORM-->
                 						</div>
+                						 <p> <a href='documents/Permiso_Foto.docx'>Download Photo Conent Scan</a></p>
                 						 <p style="color: red"> <br/>Para finalizar la inscripción, debe cambiar el estado a "SENT" en candidate workflow.</p>
+
+                						  
+
                 					</div>
                 					<!-- END PORTLET-->
 							</div>
@@ -826,6 +830,7 @@ function newupdateCandidate(){
                 	else{
                 	   alert ("The candidate was added!. To be confirmed, please complete the documents and the workflow to be verified")
              		   redirect(new_can_id);
+
                 	}    
             	}
             });  

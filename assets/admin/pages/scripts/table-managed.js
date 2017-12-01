@@ -59,10 +59,12 @@ var TableManaged = function () {
                 "orderable": false
             }, {
                 "orderable": false
+            }, {
+                "orderable": false
             }],
             "lengthMenu": [
-                [7, 25, 50, -1],
-                [7, 25, 50, "All"] // change per page values here
+                [7, 25, 50, 100, -1],
+                [7, 25, 50, 100, "All"] // change per page values here
             ],
             // set the initial value
             "pageLength": 5,            
@@ -84,9 +86,9 @@ var TableManaged = function () {
                 "searchable": false,
                 "targets": [0]
             }],
-            "order": [
-                [5, "asc"]
-            ] // set first column as a default sort by asc
+           // "order": [
+           //     [5, "asc"]
+           // ] // set first column as a default sort by asc
         });
 
         var tableWrapper = jQuery('#sample_1_wrapper');

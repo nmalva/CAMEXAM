@@ -1,5 +1,6 @@
 
 <?php include ("includes/title.php");?>
+<?php include ("includes/security_session.php");?>
 <?php //include ("includes/security_session.php");?>
 <!DOCTYPE html>
 <html lang="en">
@@ -82,7 +83,7 @@ function get_candidate($exa_id, $prc_id){
 	    LEFT JOIN ExamPlaceAula on Candidate.epa_id=ExamPlaceAula.epa_id
 	    LEFT JOIN ExamPlace on Candidate.exp_id=ExamPlace.exp_id
 	    LEFT JOIN Exam on Candidate.exa_id=Exam.exa_id
-    	WHERE Exam.exa_id = {$exa_id} and Candidate.prc_id = {$prc_id}
+    	WHERE Exam.exa_id = {$exa_id}
     	ORDER BY can_id ASC";
     $resultado = $class_bd->ejecutar($sql);
  //   $r=$class_bd->retornar_fila($resultado);

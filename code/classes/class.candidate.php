@@ -1,7 +1,7 @@
 <?php
 
 require_once("class.bd.php");
-
+//
 class Candidate extends bd
 {
 
@@ -50,7 +50,7 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 				$this->can_timereading=$r["can_timereading"];
 				$this->can_timereadingandwriting=$r["can_timereadingandwriting"];
 				$this->can_timereadinganduseofenglish=$r["can_timereadinganduseofenglish"];
-				
+				$this->can_packingcodespeaking=$r["can_packingcodespeaking"];
 
 	
         
@@ -99,98 +99,96 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 	//-----------------Set Methods---------------
 
 	function setCan_id($value){
-	$sql="UPDATE Candidate SET can_id='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_id='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_dni($value){
-	$sql="UPDATE Candidate SET can_dni='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_dni='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_firstname($value){
-	$sql="UPDATE Candidate SET can_firstname='{$value}' WHERE can_id={$this->can_id}";
-
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_firstname='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_lastname($value){
-	$sql="UPDATE Candidate SET can_lastname='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_lastname='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_gender($value){
-	$sql="UPDATE Candidate SET can_gender='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_gender='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_datebirth($value){
-	$sql="UPDATE Candidate SET can_datebirth='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_datebirth='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_email($value){
-	$sql="UPDATE Candidate SET can_email='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_email='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_adress($value){
-	$sql="UPDATE Candidate SET can_adress='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_adress='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_telephone($value){
-	$sql="UPDATE Candidate SET can_telephone='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_telephone='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_cellphone($value){
-	$sql="UPDATE Candidate SET can_cellphone='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_cellphone='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_visa($value){
-	$sql="UPDATE Candidate SET can_visa='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_visa='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_disability($value){
-	$sql="UPDATE Candidate SET can_disability= '{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_disability= '{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_disabilitycom($value){
-	$sql="UPDATE Candidate SET can_disabilitycom= '{$value}' WHERE can_id={$this->can_id}";
-
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_disabilitycom= '{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setExp_id($value){
-	$sql="UPDATE Candidate SET exp_id= '{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET exp_id= '{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setExa_id($value){
 	    $sql="UPDATE Candidate SET exa_id= '{$value}' WHERE can_id={$this->can_id}";
 	    $this-> ejecutar($sql);
 	}
 	function setCan_candidatetype($value){
-	$sql="UPDATE Candidate SET can_candidatetype='{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_candidatetype='{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setPrc_id($value){
-	$sql="UPDATE Candidate SET prc_id= '{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET prc_id= '{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_candidatenum($value){
-	$sql="UPDATE Candidate SET can_candidatenum= '{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_candidatenum= '{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setEpa_id($value){
-	$sql="UPDATE Candidate SET epa_id= '{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET epa_id= '{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_paymentfile($value){
-    $sql="UPDATE Candidate SET can_paymentfile= '{$value}' WHERE can_id={$this->can_id}";
-    $this-> ejecutar($sql);
+    	$sql="UPDATE Candidate SET can_paymentfile= '{$value}' WHERE can_id={$this->can_id}";
+    	$this-> ejecutar($sql);
 	}	
 	function setCan_dnifile($value){
-	$sql="UPDATE Candidate SET can_dnifile= '{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_dnifile= '{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}	
 	function setCan_acifile($value){
-	$sql="UPDATE Candidate SET can_acifile= '{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_acifile= '{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_disabilityfile($value){
-	$sql="UPDATE Candidate SET can_disabilityfile= '{$value}' WHERE can_id={$this->can_id}";
-	$this-> ejecutar($sql);
+		$sql="UPDATE Candidate SET can_disabilityfile= '{$value}' WHERE can_id={$this->can_id}";
+		$this-> ejecutar($sql);
 	}
 	function setCan_status($value){
 	    $sql="UPDATE Candidate SET can_status= '{$value}'  WHERE can_id={$this->can_id}";
@@ -230,6 +228,10 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 	}
 	function setCan_timereadinganduseofenglish($value){
 	    $sql="UPDATE Candidate SET can_timereadinganduseofenglish= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
+	function setCan_packingcodespeaking($value){
+	    $sql="UPDATE Candidate SET can_packingcodespeaking= '{$value}'  WHERE can_id={$this->can_id}";
 	    $this-> ejecutar($sql);
 	}
 

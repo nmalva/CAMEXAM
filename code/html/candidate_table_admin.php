@@ -232,8 +232,7 @@ function write_candidate($session_prc_id, $get_exa_id){
         				</li>
         				<li>
         					<a href="javascript:redirect_addinfo(<?php echo $get_exa_id;?>);">Add Information</a>
-        				</li>
-        				
+        				</li>        				
         			</ul>
 			<!-- END PAGE BREADCRUMB -->
 				<!-- BEGIN PAGE CONTENT INNER -->

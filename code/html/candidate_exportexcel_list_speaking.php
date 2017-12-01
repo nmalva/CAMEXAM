@@ -41,12 +41,12 @@ if (PHP_SAPI == 'cli')
 /*VARIABLES*/
 $get_exa_id=$_GET["exa_id"];
 $file_name=get_filename($get_exa_id);
-
+//$venue = $get_venue($get_exa_id);
 
 
 /*PHP FUNCTIONS*/
 function get_filename($get_exa_id){
-    $class_bd=new bd();
+    $class_bd =new bd();
     $class_utiles= new utiles();
     $sql = "SELECT * FROM Exam INNER JOIN TypeExam ON Exam.tye_id=TypeExam.tye_id WHERE exa_id='{$get_exa_id}'";
     $resultado=$class_bd->ejecutar($sql);
@@ -56,17 +56,38 @@ function get_filename($get_exa_id){
     return ($string);
 }
 
+function get_venue($get_exa_id){
+    $class_bd =new bd();
+    $class_utiles= new utiles();
+    $sql = "SELECT * FROM Exam INNER JOIN TypeExam ON Exam.tye_id=TypeExam.tye_id WHERE exa_id='{$get_exa_id}'";
+    $resultado=$class_bd->ejecutar($sql);
+    $r=$class_bd->retornar_fila($resultado);
+    $string.=$r["tye_name"]."-";
+    $string.=$class_utiles->fecha_mysql_php_export($r["exa_date"]);
+    return ($string);
+}
+
+function get_newepaname($can_packingcodespeaking){
+    $class_bd1 = new bd();
+    $sql="SELECT * FROM ExamPlaceAula
+        WHERE epa_id = {$can_packingcodespeaking}";
+        $resultado = $class_bd1->ejecutar($sql);
+        $r=$class_bd1->retornar_fila($resultado);
+
+        return ($r["epa_packingcode"]);
+}
 
 /*OBJECTS*/
 $objPHPExcel = new PHPExcel();
 $class_bd= new bd();
 $class_utiles=new utiles();
+//$asdasd = get_filename($get_exa_id);
 
 // Set document properties
 $objPHPExcel->getProperties()->setCreator("Waraexam")
 							 ->setLastModifiedBy("Waraexam")
-							 ->setTitle("List of Candidate")
-							 ->setSubject("List of Candidates")
+							 ->setTitle("List of Exam")
+							 ->setSubject("List of Exam")
 							 ->setDescription("List of Candidates")
 							 ->setKeywords("office 2007 openxml php")
 							 ->setCategory("Test result file");
@@ -74,28 +95,18 @@ $objPHPExcel->getProperties()->setCreator("Waraexam")
 
  
 $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('A1', 'Candidate number*')
-            ->setCellValue('B1', 'First name*')
-            ->setCellValue('C1', 'Last name')
-            ->setCellValue('D1', 'AIC Required')
-            ->setCellValue('E1', 'Gender')
-            ->setCellValue('F1', 'Candidate type*')
-            ->setCellValue('G1', 'Exam Place')
-            ->setCellValue('H1', 'Preparation centre')
-            ->setCellValue('I1', 'Packing code')
-            ->setCellValue('J1', 'Date of birth*')
-            ->setCellValue('K1', 'Country code')
-            ->setCellValue('L1', 'Area code')
-            ->setCellValue('M1', 'Contact number')
-            ->setCellValue('N1', 'Mobile number')
-            ->setCellValue('O1', 'Email address')
-            ->setCellValue('P1', 'ID number')
-            ->setCellValue('Q1', 'Campaign code')
-            ->setCellValue('R1', 'Address line1')
-            ->setCellValue('S1', 'Address line2')
-            ->setCellValue('T1', 'City')
-            ->setCellValue('U1', 'Post/Area code')
-            ->setCellValue('V1', 'Country');
+          
+            ->setCellValue('A1', "Exam/Date")
+            ->setCellValue('B1', $file_name)
+            ->setCellValue('A2', "Paper Name")
+            ->setCellValue('B2', "Speaking")
+
+            ->setCellValue('A5', 'Number')
+            ->setCellValue('B5', 'Name')
+            ->setCellValue('C5', 'Time')
+            ->setCellValue('D5', 'Date')
+            ->setCellValue('E5', 'P. Code')
+            ->setCellValue('F5', 'Present (S/N)');
 
 // Miscellaneous glyphs, UTF-8
 
@@ -105,36 +116,41 @@ $sql = "SELECT * FROM Candidate
         INNER JOIN ExamPlace ON Candidate.exp_id=ExamPlace.exp_id
         LEFT JOIN ExamPlaceAula ON Candidate.epa_id=ExamPlaceAula.epa_id
         WHERE exa_id='{$get_exa_id}' AND can_status='2'
-        ORDER BY Candidate.can_candidatenum ASC, ExamPlace.exp_name, PrepCentre.prc_name, Candidate.can_lastname"; // can_status=1 --> confirmed
+        ORDER BY Candidate.can_datespeaking, Candidate.can_packingcodespeaking, Candidate.can_timespeaking"; // can_status=1 --> confirmed
 $resultado=$class_bd->ejecutar($sql);
-$i=2;
+$i=6;
 while ($line = $class_bd->retornar_fila($resultado)){
     $gender=($line["can_gender"]==0 ? "Female" : "Male");
     $date= $class_utiles->fecha_mysql_php($line["can_datebirth"]);
-    $can_candidate_type=($line["can_candidatetype"]==1 ? "Internal" : "External");
+    $name = $line["can_firstname"]." ".$line["can_lastname"];
+    $date_exam = $class_utiles->fecha_mysql_php($line["exa_date"]);
+
+    if($line["can_datespeaking"]== NULL || $r["can_datespeaking"]=="0000-00-00" )
+        $date_speaking = $date_exam;
+    else
+        $date_speaking = $class_utiles->fecha_mysql_php($line["can_datespeaking"]);
+
+
+
+    if($line["can_packingcodespeaking"]== NULL || $r["can_packingcodespeaking"]=="0"){
+        $epa_name = $line["epa_packingcode"];
+    }
+    else{
+        $epa_name = get_newepaname($line["can_packingcodespeaking"]);
+    }
+
+
+
+
+
+
     $objPHPExcel->setActiveSheetIndex(0)
     ->setCellValue('A'.$i,$line["can_candidatenum"])
-    ->setCellValue('B'.$i,$line["can_firstname"])
-    ->setCellValue('C'.$i,$line["can_lastname"])
-    ->setCellValue('D'.$i,"")
-    ->setCellValue('E'.$i,$gender)
-    ->setCellValue('F'.$i,$can_candidate_type)
-    ->setCellValue('G'.$i,$line["exp_name"])
-    ->setCellValue('H'.$i,$line["prc_name"])
-    ->setCellValue('I'.$i,$line["epa_packingcode"]) //before  antes ->setCellValue($line["can_packingcode"],false, $class_excelexport_int);
-    ->setCellValue('J'.$i,$date)
-    ->setCellValue('K'.$i,"")
-    ->setCellValue('L'.$i,"")
-    ->setCellValue('M'.$i,(int)$line["can_telephone"])
-    ->setCellValue('N'.$i,(int)$line["can_cellphone"])
-    ->setCellValue('O'.$i,$line["can_email"])
-    ->setCellValue('P'.$i,$line["can_dni"]) //before  ->setCellValue($line["can_dni"],false, $class_excelexport_int);
-    ->setCellValue('Q'.$i,"")
-    ->setCellValue('R'.$i,"")
-    ->setCellValue('S'.$i,"")
-    ->setCellValue('T'.$i,"")
-    ->setCellValue('U'.$i,"")
-    ->setCellValue('V'.$i,"");
+    ->setCellValue('B'.$i,$name)
+    ->setCellValue('C'.$i,$line["can_timespeaking"])
+    ->setCellValue('D'.$i,$date_speaking)
+    ->setCellValue('E'.$i,$epa_name)
+    ->setCellValue('F'.$i,"");
     $i++;
 }
  
@@ -144,28 +160,13 @@ $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
 $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
 $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
 $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('M')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('N')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('O')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('P')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('Q')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('R')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('S')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('T')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('U')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('V')->setAutoSize(true);
-
 
 
 // Rename worksheet
 $objPHPExcel->getActiveSheet()->setTitle("Template");
+
+
+
 
 
 // Set active sheet index to the first sheet, so Excel opens this as the first sheet
@@ -174,7 +175,7 @@ $objPHPExcel->setActiveSheetIndex(0);
 
 // Redirect output to a client’s web browser (Excel5)
 header('Content-Type: application/vnd.ms-excel');
-header('Content-Disposition: attachment;filename='.$file_name.'_internal.xls');
+header('Content-Disposition: attachment;filename='.$file_name.'_Speaking.xls');
 header('Cache-Control: max-age=0');
 // If you're serving to IE 9, then the following may be needed
 //header('Cache-Control: max-age=1');
