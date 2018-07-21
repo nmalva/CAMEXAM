@@ -658,7 +658,7 @@ function place_info($r){
 						<div class="row">
 							<div class="col-xs-12">
 								<ul class="well">
-										 Haciendo click en <a href="documents/notice_adolescentes_adultos.pdf">"Notice to candidates Exámenes para adolescentes y adultos"</a> podrá visualizar el documento. Haciendo click en <a href="documents/flyer.pdf">"Starters -  Movers - Flyers en castellano"</a> podrá visualizar el documento. Por favor leer en detalle y ante cualquier consulta, comuníquense con nosotros con antelación.
+										 Haciendo click en <a href="documents/notice_adolescentes_adultos.pdf">"Notice to candidates Exámenes para adolescentes y adultos"</a> podrá visualizar el documento. Haciendo click en <a href="documents/starters_movers_flyers_castellano.pdf">"Starters -  Movers - Flyers en castellano"</a> podrá visualizar el documento. Por favor leer en detalle y ante cualquier consulta, comuníquense con nosotros con antelación.
 								</ul>
 							</div>
 						</div>

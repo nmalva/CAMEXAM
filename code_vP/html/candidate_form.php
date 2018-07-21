@@ -373,7 +373,7 @@ function getOptionPrepCentre($prc_id_user, $prc_id_candidate) //this is for chan
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<label class="control-label col-md-3">Address</label>
+															<label class="control-label col-md-3">City/Province</label>
 															<div class="col-md-9">
 																<input type="text" name="can_adress" class="form-control" value ="<?php echo $can_adress;?>" >
 															</div>
@@ -442,7 +442,7 @@ function getOptionPrepCentre($prc_id_user, $prc_id_candidate) //this is for chan
         																}
     																?>
 																	<span class="help-block">
-																In case the candidate has any disability please select "Yes".  </span>
+																In case the candidate has any disability please select “yes” </span>
 																</div>
 															</div>
 														</div>
@@ -474,7 +474,7 @@ function getOptionPrepCentre($prc_id_user, $prc_id_candidate) //this is for chan
 														<div class="form-group">
 															<label id="label_can_disabilitycom" class="control-label col-md-3" style="display: <?php echo $display_can_disabilitycom;?>">Description</label>
 															<div class="col-md-9">
-																<textarea rows ="3" name="can_disabilitycom" class="form-control" style="display: <?php echo $display_can_disabilitycom;?>" placeholder="Please describe in 50 words de special needs of the Candidate"><?php echo $can_disabilitycom;?></textarea>
+																<textarea rows ="3" name="can_disabilitycom" class="form-control" style="display: <?php echo $display_can_disabilitycom;?>" placeholder="Please describe the special arrangements required in 50 words"><?php echo $can_disabilitycom;?></textarea>
 															</div>
 														</div>
 													</div>
