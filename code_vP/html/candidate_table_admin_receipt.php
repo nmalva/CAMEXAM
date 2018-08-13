@@ -19,8 +19,6 @@
 $_SESSION["exa_id"]=$_GET["exa_id"]; //It is used in the form (to not use get)
 $get_exa_id=$_GET["exa_id"];
 $session_prc_id= $_SESSION["prc_id"];
-$$session_use_usertype = $_SESSION["use_usertype"];
-
 ?>
 <!--  END GLOBAL VARIABLES -->
 
@@ -38,24 +36,20 @@ function write_candidate($session_prc_id, $get_exa_id){
     $class_bd=new bd();
     $class_utiles= new utiles();
     $folder="../../files/";
-    global $session_use_usertype;
     $sql="SELECT * FROM Candidate 
                    INNER JOIN ExamPlace on Candidate.exp_id=ExamPlace.exp_id
                    INNER JOIN PrepCentre on Candidate.prc_id=PrepCentre.prc_id
-                   WHERE exa_id={$get_exa_id} AND (can_status=1 or can_status=2 or can_status=3)";
+                   WHERE exa_id={$get_exa_id}";
     $resultado=$class_bd->ejecutar($sql);
     $i=1;
     while ($r=$class_bd->retornar_fila($resultado))
     {
 
-        if ($r["can_status"]==STATUS_NOT_SENT)
+        if ($r["can_receipt"]==STATUS_NOT_SENT)
             $color=COLOR_NOT_SENT;
-        if ($r["can_status"]==STATUS_SENT)
-            $color=COLOR_SENT;
-        if ($r["can_status"]==STATUS_CONFIRMED)
+        if ($r["can_receipt"]==STATUS_SENT)
             $color=COLOR_CONFIRMED;
-        if ($r["can_status"]==STATUS_ERROR)
-            $color=COLOR_ERROR;
+       
         
         $nombre=$r["can_firstname"];
         if ($r["can_gender"]==0)
@@ -78,22 +72,11 @@ function write_candidate($session_prc_id, $get_exa_id){
          $checked2=""; 
          $checked3="";
          
-         if ($r["can_status"]==0) //Not Sent
-             $checked0="selected";
-         if ($r["can_status"]==1) // Sent
-             $checked1="selected";
-         if ($r["can_status"]==2) // Confirmed
-             $checked2="selected";
-         if ($r["can_status"]==3) // Err
-             $checked3="selected";
-
-  		 $checked_0="";
-         $checked_1="";
-
          if ($r["can_receipt"]==0) //Not Sent
-             $checked_0="selected";
+             $checked0="selected";
          if ($r["can_receipt"]==1) // Sent
-             $checked_1="selected";
+             $checked1="selected";
+        
           
          
          if ($r["can_paymentfile"]!=""){$can_paymentfile="Y";}else{$can_paymentfile="N";}
@@ -112,33 +95,17 @@ function write_candidate($session_prc_id, $get_exa_id){
          $line.="<td style='color:{$color}'>{$r["can_lastname"]}</td>";
          $line.="<td style='color:{$color}'>{$r["can_dni"]}</td>";
          $line.="<td><a target='_blank' href='{$path_payment}' style='color:{$color}'>{$can_paymentfile}</a></td>";
-         $line.="<td><a target='_blank' href='{$path_dni}' style='color:{$color}'>{$can_dnifile}</a></td>";
-         $line.="<td><a target='_blank' href='{$path_aci}' style='color:{$color}'>{$can_acifile}</a></td>";
-         $line.="<td><a target='_blank' href='{$path_disability}' style='color:{$color}'>{$can_disabilityfile}</a></td>";
-         $line.="<td style='text-align: center;'>                    
-         		<select onchange='updateStatus({$r["can_id"]}, this.value);'>
-    				<option  name='{$r["can_id"]}' value='0' {$checked0} disabled> Not Sent </option>
-                    <option  name='{$r["can_id"]}' value='1' {$checked1} disabled> Sent </option>
-                    <option  name='{$r["can_id"]}' value='2' {$checked2}> Confirmed </option>
-                    <option  name='{$r["can_id"]}' value='3' {$checked3}> Error </option>       			
+         $line.="<td style='text-align: center;'>
+                    
+         		<select onchange='updateReceipt({$r["can_id"]}, this.value);'>
+    				<option  name='{$r["can_id"]}' value='0' {$checked0} > Receipt not Generated </option>
+                    <option  name='{$r["can_id"]}' value='1' {$checked1} > Receipt Generated </option> 
     			</select>	
     			<img alt='loading' src='../../assets/admin/layout3/img/loading-spinner-blue.gif' id='update_check' style='display:none;'>
+
          </td>";
-
-          if ($session_use_usertype ==1){
-
-	          $line.="<td style='text-align: center;'>           
-	         		<select onchange='updateReceipt({$r["can_id"]}, this.value);'>
-	    				<option  name='{$r["can_id"]}' value='0' {$checked_0} > Receipt not Generated </option>
-	                    <option  name='{$r["can_id"]}' value='1' {$checked_1} > Receipt Generated </option> 
-	    			</select>	
-	    			<img alt='loading' src='../../assets/admin/layout3/img/loading-spinner-blue.gif' id='update_check' style='display:none;'>
-	         </td>";
-	         $line.="<td><textarea onfocusout='updateAmmount({$r["can_id"]},this.value)' rows='1' style='color:{$color}'>{$r["can_ammount"]}</textarea></td>";   
-	         $line.="<td><textarea onfocusout='updateReceiptNumber({$r["can_id"]},this.value)' rows='1' style='color:{$color}'>{$r["can_receiptnumber"]}</textarea></td>"; 
-	     } 
-         $line.="<td><textarea onfocusout='updateComment({$r["can_id"]},this.value)' rows='1' style='color:{$color}'>{$r["can_commentadmin"]}</textarea></td>";   
-         $line.="<td style='color:{$color}'>{$r["can_comment"]}</td>";
+         $line.="<td><textarea onfocusout='updateAmmount({$r["can_id"]},this.value)' rows='1' style='color:{$color}'>{$r["can_ammount"]}</textarea></td>";   
+         $line.="<td><textarea onfocusout='updateReceiptNumber({$r["can_id"]},this.value)' rows='1' style='color:{$color}'>{$r["can_receiptnumber"]}</textarea></td>";  
          $line.="</tr>";
          
          echo $line;
@@ -320,20 +287,9 @@ function write_candidate($session_prc_id, $get_exa_id){
 											<th>Last Name</th>
 											<th>DNI</th>
 											<th>F-Pay</th>
-											<th>F-Id</th>
-											<th>F-Con.</th>
-											<th>F-Sp. Arr.</th>
 											<th>Check</th>
-											<?php 
-												if ($session_use_usertype ==1){
-												echo
-													"<th>Receipt</th>
-													<th>USD Ammount</th>
-													<th>Receipt Number</th>";
-												}
-											?>
-											<th>Comment Admin</th>
-											<th>Comment User</th>
+											<th>USD Ammount</th>
+											<th>Receipt Number</th>
 											
 										</tr>
 									</thead>
@@ -429,37 +385,6 @@ function export_excel(exa_id){
 		document.location.href= pagina;
 	}
 }
-function updateStatus(can_id, can_status){
-	//showUpdateCheck();
-	$.ajax({
-        url:"../abm/abm.candidate.php",
-        type: "POST",
-        data:{can_id:can_id, can_status:can_status}, 
-        success: function(opciones){ 
-        	//hideUpdateCheck();				
-          }
-       });
-}
-function updateComment(can_id, can_commentadmin){
-	//showUpdateCheck();
-	if (can_commentadmin!=""){  //this if is to avoid the error of blank field
-    	$.ajax({
-            url:"../abm/abm.candidate.php",
-            type: "POST",
-            data:{can_id:can_id, can_commentadmin:can_commentadmin}, 
-            success: function(opciones){ 
-         	  
-              }
-           });
-	}
-}
-function showUpdateCheck(){
-    this.document.getElementById("update_check").style.display = 'inline';
-    }
-function hideUpdateCheck(){
-    this.document.getElementById("update_check").style.display = 'none';
-    }
-
 function updateReceipt(can_id, can_receipt){
 	//showUpdateCheck();
 	$.ajax({
@@ -484,7 +409,6 @@ function updateAmmount(can_id, can_ammount){
            });
 	}
 }
-
 function updateReceiptNumber(can_id, can_receiptnumber){
 	//showUpdateCheck();
 	if (can_receiptnumber!=""){  //this if is to avoid the error of blank field
@@ -498,6 +422,13 @@ function updateReceiptNumber(can_id, can_receiptnumber){
            });
 	}
 }
+function showUpdateCheck(){
+    this.document.getElementById("update_check").style.display = 'inline';
+    }
+function hideUpdateCheck(){
+    this.document.getElementById("update_check").style.display = 'none';
+    }
+
 
 //--END JAVASCRIPT FUNCTIONS--
 </script>

@@ -232,7 +232,8 @@ function write_candidate($session_prc_id, $get_exa_id){
         				</li>
         				<li>
         					<a href="javascript:redirect_addinfo(<?php echo $get_exa_id;?>);">Add Information</a>
-        				</li>        				
+        				</li> 
+        				     				
         			</ul>
 			<!-- END PAGE BREADCRUMB -->
 				<!-- BEGIN PAGE CONTENT INNER -->
@@ -390,6 +391,10 @@ function redirect_check(exa_id){
 }
 function redirect_addinfo(exa_id){
 	pagina = "candidate_table_admin_addinfo.php?exa_id="+ exa_id;
+	setTimeout(redireccionar, 100, pagina);     
+}
+function redirect_receipt(exa_id){
+	pagina = "candidate_table_admin_receipt.php?exa_id="+ exa_id;
 	setTimeout(redireccionar, 100, pagina);     
 }
 //--END JAVASCRIPT FUNCTIONS--

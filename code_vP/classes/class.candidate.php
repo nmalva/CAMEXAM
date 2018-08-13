@@ -51,6 +51,9 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 				$this->can_timereadingandwriting=$r["can_timereadingandwriting"];
 				$this->can_timereadinganduseofenglish=$r["can_timereadinganduseofenglish"];
 				$this->can_packingcodespeaking=$r["can_packingcodespeaking"];
+				$this->can_receipt=$r["can_receipt"];
+				$this->can_ammount=$r["can_ammount"];
+				$this->can_receiptnumber=$r["can_receiptnumber"];
 
 	
         
@@ -93,6 +96,9 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 	function getCan_timereading(){return $this->can_timereading;}
 	function getCan_timereadingandwriting(){return $this->can_timereadingandwriting;}
 	function getCan_timereadinganduseofenglish(){return $this->can_timereadinganduseofenglish;}
+	function getCan_receipt(){return $this->can_receipt;}
+	function getCan_ammount(){return $this->can_ammount;}
+	function getCan_receiptnumber(){return $this->can_receiptnumber;}
 	function getCan_timestamp(){return $this->can_timestamp;}
 
 
@@ -232,6 +238,18 @@ function __construct($id = 0)          //recibe como parametro el id, sino lo po
 	}
 	function setCan_packingcodespeaking($value){
 	    $sql="UPDATE Candidate SET can_packingcodespeaking= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
+	function setCan_receipt($value){
+	    $sql="UPDATE Candidate SET can_receipt= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
+	function setCan_ammount($value){
+	    $sql="UPDATE Candidate SET can_ammount= '{$value}'  WHERE can_id={$this->can_id}";
+	    $this-> ejecutar($sql);
+	}
+		function setCan_receiptnumber($value){
+	    $sql="UPDATE Candidate SET can_receiptnumber= '{$value}'  WHERE can_id={$this->can_id}";
 	    $this-> ejecutar($sql);
 	}
 

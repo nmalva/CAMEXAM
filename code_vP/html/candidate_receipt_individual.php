@@ -1,5 +1,6 @@
 
 <?php include ("includes/title.php");?>
+<?php include ("includes/security_session.php");?>
 <?php //include ("includes/security_session.php");?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,18 +8,36 @@
 <!-- BEGIN HEADDD -->
 <head>
 <meta name="tipo_contenido"  content="text/html;" http-equiv="content-type" charset="utf-8">
+<style>
+@media all {
+   div.saltopagina{
+      display: none;
+   }
+}
+   
+@media print{
+   div.saltopagina{ 
+      display:block; 
+      page-break-before:always;
+   }
+}
+</style>
+
 <!--  BEGIN INCLUDE CLASSES -->
 <?php 
 include_once("../classes/class.bd.php");
 include_once("../classes/class.utiles.php");
+include_once("../classes/class.numeroaletra.php");
 ?>
 <!--  END INCLUDE CLASSES -->
 
 <!--  BEGIN GLOBAL VARIABLES -->
 <?php 
 $session_can_id = $_SESSION["can_id"];
-$r = get_candidate($session_can_id);
+$prc_id = $_SESSION ["prc_id"];
+$get_exa_id = $_GET["exa_id"];
 $class_utiles = new utiles();
+
 ?>
 <!--  END GLOBAL VARIABLES -->
 
@@ -65,23 +84,20 @@ function get_candidate($can_id){
 	    LEFT JOIN ExamPlaceAula on Candidate.epa_id=ExamPlaceAula.epa_id
 	    LEFT JOIN ExamPlace on Candidate.exp_id=ExamPlace.exp_id
 	    LEFT JOIN Exam on Candidate.exa_id=Exam.exa_id
-    	WHERE can_id = '{$can_id}'
-    	ORDER BY can_id ASC";
+    	WHERE Candidate.can_id = {$can_id}";
     $resultado = $class_bd->ejecutar($sql);
-    $r=$class_bd->retornar_fila($resultado);
-
-    return ($r);
-
+ //   $r=$class_bd->retornar_fila($resultado);
+    return ($resultado);
 }
 
 function get_newepaname($can_packingcodespeaking){
-    $class_bd1 = new bd();
+    $class_bd = new bd();
     $sql="SELECT * FROM ExamPlaceAula
-        WHERE epa_id = {$can_packingcodespeaking}";
-        $resultado = $class_bd1->ejecutar($sql);
-        $r=$class_bd1->retornar_fila($resultado);
+    	WHERE epa_id = {$can_packingcodespeaking}";
+    	$resultado = $class_bd->ejecutar($sql);
+    	$r=$class_bd->retornar_fila($resultado);
 
-        return ($r["epa_name"]);
+    	return ($r["epa_name"]);
 }
 
 function exp_datos($epa_id){
@@ -104,7 +120,6 @@ function type_exam($tye_id){
     return ($r["tye_name"]);
 
 }
-
 
 function time_array_order_speaking($can_id){
 	$class_bd2 = new bd();
@@ -151,6 +166,7 @@ function time_array_order_nospeaking($can_id){
 	return (array_keys($time_array));
 }
 
+
 function exam_info($r,$field_visible){
 $class_utiles=new utiles();
 $date_exam = $class_utiles->fecha_mysql_php($r["exa_date"]);
@@ -163,8 +179,7 @@ else
 	$date_speaking = $class_utiles->fecha_mysql_php($r["can_datespeaking"]);
 
 
-
-if($r["can_packingcodespeaking"]== NULL || $r["can_packingcodespeaking"]=="0"){
+if($r["can_packingcodespeaking"] == NULL || $r["can_packingcodespeaking"]=="0"){
 	$epa_name = $r["epa_name"];
 	$new_exp_adress = $exp_datos["exp_adress"];
 	$new_exp_name = $exp_datos["exp_name"];
@@ -177,11 +192,11 @@ else{
 }
 
 
-
 if($r["can_datespeaking"]== NULL || $r["can_datespeaking"]=="0000-00-00" )
-	$fecha = 1; // if can_datespeaking is Null, same day so order by tima.
+	$fecha = 1; // if can_datespeaking is Null, same day so order by time.
 else
 	$fecha = $class_utiles->compararFechas($r["can_datespeaking"],$r["exa_date"]); //2 --> fecha 1 > fecha 2
+
 
 
   
@@ -240,6 +255,7 @@ else
      	 </tr>";
 
 
+
 if ($fecha ==1 ){ // f1=f2
 	$time_array= time_array_order_speaking($r["can_id"]);
 	for ($i=0;$i<=5;$i++){
@@ -259,9 +275,7 @@ if ($fecha ==1 ){ // f1=f2
 		echo $filds_array[$time_array[$i]];
 	}
 }
-  
 
-    
 }
 
 function field_visible($exa_id){
@@ -288,8 +302,7 @@ function place_info($r){
     
 }
 
-
- function get_examStatus($get_exa_id){
+function get_examStatus($get_exa_id){
     $class_bd=new bd();
     $sql="SELECT * FROM Exam WHERE exa_id = {$get_exa_id}"; 
     $resultado=$class_bd->ejecutar($sql);
@@ -297,6 +310,8 @@ function place_info($r){
 
     return($r["exa_status"]);	
 }
+  
+
     
 ?>
 <!--  END PHP FUNCTIONS -->
@@ -326,6 +341,12 @@ function place_info($r){
 <!-- END PAGE LEVEL STYLES -->
 <!-- BEGIN THEME STYLES -->
 <?php include ("includes/themestyle.html")?>
+
+<?php 
+
+
+?>
+
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="favicon.ico"/>
 </head>
@@ -442,7 +463,7 @@ function place_info($r){
 					<li class="dropdown dropdown-user dropdown-dark">
 						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
 						<img alt="" class="img-circle" src="../../assets/admin/layout3/img/avatar.png">
-						<span class="username username-hide-mobile"><?php echo $_SESSION["can_firstname"]?></span>
+						<span class="username username-hide-mobile"><?php echo $_SESSION["prc_name"]?></span>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-default">
 							<li>
@@ -487,9 +508,6 @@ function place_info($r){
 			<!-- END MEGA MENU -->
 		</div>
 	</div>
-	 
-	 
-	 
 	 
 	 
 	<!-- END HEADER MENU -->
@@ -546,188 +564,198 @@ function place_info($r){
 
 
 
+<?php 
+
+$resultado = get_candidate($session_can_id) ;
+//print_r($resultado);
+$class_bd1 = new bd();
+$class_numeroaletra = new NumeroALetras();
+
+/*$exam_status=get_examStatus($get_exa_id);
+if($exam_status!=3){
+	echo"Este Examen no cuenta aún con los horarios cargados o el mismo no se encuentra disponible";
+}else{
+*/
+	while ($r = $class_bd1->retornar_fila($resultado)) {
+
+			$field_visible = field_visible($r["exa_id"]);
+			$ammount = $r["can_ammount"];
+			$ammount_letras = $class_numeroaletra-> convertir($ammount, $moneda = 'Dolares', $centimos = 'Centimos');
+			$html ="
 				<!-- BEGIN PAGE CONTENT -->
-	<div class="page-content">
-		<div class="container">
-			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-			<div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-							<h4 class="modal-title">Modal title</h4>
+				<div class='page-content'>
+					<div class='container'>
+						<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+						<div class='modal fade' id='portlet-config' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+							<div class='modal-dialog'>
+								<div class='modal-content'>
+									<div class='modal-header'>
+										<button type='button' class='close' data-dismiss='modal' aria-hidden='true'></button>
+										<h4 class='modal-title'>Modal title</h4>
+									</div>
+									<div class='modal-body'>
+										 Widget settings form goes here
+									</div>
+									<div class='modal-footer'>
+										<button type='button' class='btn blue'>Save changes</button>
+										<button type='button' class='btn default' data-dismiss='modal'>Close</button>
+									</div>
+								</div>
+								<!-- /.modal-content -->
+							</div>
+							<!-- /.modal-dialog -->
 						</div>
-						<div class="modal-body">
-							 Widget settings form goes here
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn blue">Save changes</button>
-							<button type="button" class="btn default" data-dismiss="modal">Close</button>
-						</div>
-					</div>
-					<!-- /.modal-content -->
-				</div>
-				<!-- /.modal-dialog -->
-			</div>
-			<!-- /.modal -->
-			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
-			<!-- BEGIN PAGE BREADCRUMB -->
-			<!--<ul class="page-breadcrumb breadcrumb">
-				<li>
-					<a href="#">Home</a><i class="fa fa-circle"></i>
-				</li>
-				<li>
-					<a href="extra_invoice.html">Pages</a>
-					<i class="fa fa-circle"></i>
-				</li>
-				<li class="active">
-					 Invoice
-				</li>
-			</ul>-->
-			<!-- END PAGE BREADCRUMB -->
-			<!-- BEGIN PAGE CONTENT INNER -->
-
-
-
-<?php
-	$exam_status=get_examStatus($r["exa_id"]);
-	if($exam_status!=3){
-		echo"Este Examen no cuenta aún con los horarios cargados o el mismo no se encuentra disponible";
-		echo "<!--";
-
-	}
-?>
-
-			<div class="portlet light">
-				<div class="portlet-body">
-					<div class="invoice">
-						<div class="row invoice-logo">
-							<div class="col-xs-3 invoice-logo-space">
-
-								<img src="../../assets/admin/layout3/img/logo-academia-5.jpg" class="img-responsive" alt=""/>
-								 <br/>
+						<!-- /.modal -->
+						<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+						<!-- BEGIN PAGE BREADCRUMB -->
+						<!--<ul class='page-breadcrumb breadcrumb'>
+							<li>
+								<a href='#'>Home</a><i class='fa fa-circle'></i>
+							</li>
+							<li>
+								<a href='extra_invoice.html'>Pages</a>
+								<i class='fa fa-circle'></i>
+							</li>
+							<li class='active'>
+								 Invoice
+							</li>
+						</ul>-->
+						<!-- END PAGE BREADCRUMB -->
+						<!-- BEGIN PAGE CONTENT INNER -->
+						<div class='portlet light'>
+							<div class='portlet-body'>
+								<div class='invoice'>
+									<div class='row invoice-logo'>
 							
-							</div>
-							<div class="col-xs-9">
-								<p>
 
-									 <?echo $r["can_firstname"]. " " . $r["can_lastname"];?> 
-									 <span class="muted"><?echo "<strong>DNI: </strong>".$r["can_dni"]." - <strong>Fecha de Nacimiento: </strong>".$class_utiles->fecha_mysql_php($r["can_datebirth"]);?> </span>
-									 <span class="muted"><?echo "<strong>Número de Candidato: </strong>".$r["can_candidatenum"]. " - <strong>Examen: </strong>".type_exam($r["tye_id"]);?> </span>
-									
-								</p>
-							</div>
-						</div>
-						<hr/>
-						<h3>Horario de Examen:</h3>
-						<div class="row">
-							<div class="col-xs-12">
-								<table class="table table-striped table-bordered table-hover"
-									id="sample_examinfo">
-								<thead>
-								<tr>
-									<th>
-										 Examen
-									</th>
-									<th>
-										 Horario
-									</th>
-									<th >
-										 Fecha
-									</th>
-									<th >
-										 Lugar
-									</th>
-									<th >
-										 Dirección
-									</th>
-									<th >
-										 Aula
-									</th>
-								</tr>
-								</thead>
-								<tbody>		
-									<?php 
-										$field_visible = field_visible($r["exa_id"]);
-										echo exam_info($r,$field_visible);
-									?>	
-								</tbody>
-								</table>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12">
-								<ul class="well">
-										 Haciendo click en <a href="documents/notice_adolescentes_adultos.pdf">"Notice to candidates Exámenes para adolescentes y adultos"</a> podrá visualizar el documento. Haciendo click en <a href="documents/starters_movers_flyers_castellano.pdf">"Starters -  Movers - Flyers en castellano"</a> podrá visualizar el documento. Por favor leer en detalle y ante cualquier consulta, comuníquense con nosotros con antelación.
-								</ul>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12">
-								<ul class="well">
-									<strong>Consideraciones</strong><br/>
-										Los alumnos deben presentarse 30 minutos antes del examen con su DNI o pasaporte (ORIGINAL Y VÁLIDO), lápiz, goma,lapicera y este horario ** Los teléfonos celulares, relojes y dispositivos electrónicos están ABSOLUTAMENTE PROHIBIDOS EN TODO MOMENTO Y LUGAR, incluso en salas de espera y recreos. No nos responsabilizamos por estos dispositivos.
-								</ul>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-6">
-								<img src="../../assets/admin/layout3/img/logo-academia-7.jpg" alt="logo" >
-							</div>
-							<div class="col-xs-6">
-								<div class="well">
-									<address>
-									<strong>Contacto</strong><br/>
-										Eugenia Obrist: 03543 443030/0351 153450614 / admin.cambridge@aa.edu.ar
-									</address>
+										<div class='col-xs-2'>	
+											<br/>
+											<img src='../../assets/admin/layout3/img/logo-academia-5.jpg' class='img-responsive' alt=''/>	 
+										</div>
+
+										<div class='col-xs-4'>	
+
+												<br/> 
+												 <span class='muted'>
+													 <strong>ACADEMIA ARGUERLLO S.A.</strong> 
+												 </span>
+												  <span class='muted'>
+													 <strong>Dir:</strong> Ave. Rafael Nuñes 5675 
+													 <strong>Tel:</strong> 03543-420387
+												 </span>
+												  <span class='muted'>
+													 <strong>CUIT:</strong> 3064655334-9 
+												 </span>
+												 
+										</div>
+										<div class='col-xs-5'>	
+												<br/> 
+													 <strong>UNIVERSIDAD DE CABRIDGE</strong> 
+												 </span>
+												  <span class='muted'>
+													 <strong>Centre:</strong> AR612 -  Córdoba 
+
+												 </span>
+												   <span class='muted'>
+													 <strong>Dir:</strong> Ave. Rafael Nuñes 5675 
+													 <strong>Tel:</strong> 03543-420387
+												 </span><br/>
+												 <span class='muted'>
+													 Por cuenta y orden de la universidad de Cambridge
+												 </span>
+												 
+										</div>
+									</div>
+									<hr/>
+									<h3>Original Recibo #: {$r["can_receiptnumber"]} </h3>
+									<h4> {$r["can_firstname"]} {$r["can_lastname"]}  -  DNI {$r["can_dni"]}</h4>
+			
+									<div class='row'>
+										<div class='col-xs-12'>
+											<table class='table table-striped table-bordered table-hover'
+												id='sample_6'>
+											<thead>
+											<tr>
+												<th>
+													 Descripcion
+												</th>
+												<th>
+													 Total Moneda Extranjera (USD) 
+												</th>
+												<th>
+													 Total Moneda Extranjera (USD) 
+												</th>
+											</tr>
+											</thead>
+											<tbody>
+											<tr>
+												<td>".type_exam($r["tye_id"])."</td>
+												<td>USD {$r["can_ammount"]}</td>
+												<td>{$ammount_letras}</td>
+
+											</tr>	
+
+											";
+
+			$html2 = "																	
+											</tbody>
+											</table>
+										</div>
+									</div>
+								    <br/><br/><br/><br/>
+									<div class='row'>
+										<div class='col-xs-6'>
+											<img src='../../assets/admin/layout3/img/firma.png' alt='logo' >
+										</div>
+										<br/><br/>
+										<div class='col-xs-6'>
+											<div class='well'>
+
+												<address>
+												<strong>Contacto</strong><br/>
+													Eugenia Obrist: 03543 443030/0351 153450614 / admin.cambridge@aa.edu.ar
+												</address>
+											</div>
+										</div>
+										<div class='col-xs-6' align='right'>
+											<a class='btn btn-lg blue hidden-print margin-bottom-8' onclick='javascript:window.print();''>
+											Imprimir <i class='fa fa-print'></i>
+											</a>
+										</div>
+									</div>
+
+										<div class='col-xs-8 invoice-block'>
+											<!--<ul class='list-unstyled amounts'>
+												<li>
+													<strong>Sub - Total amount:</strong> $9265
+												</li>
+												<li>
+													<strong>Discount:</strong> 12.9%
+												</li>
+												<li>
+													<strong>VAT:</strong> -----
+												</li>
+												<li>
+													<strong>Grand Total:</strong> $12489
+												</li>
+											</ul>-->		
+										</div>
+									</div>
 								</div>
 							</div>
-							<div class="col-xs-6" align="right">
-								<a class="btn btn-lg blue hidden-print margin-bottom-8" onclick="javascript:window.print();">
-								Imprimir <i class="fa fa-print"></i>
-								</a>
-							</div>
 						</div>
-
-					
-
-							<div class="col-xs-8 invoice-block">
-								<!--<ul class="list-unstyled amounts">
-									<li>
-										<strong>Sub - Total amount:</strong> $9265
-									</li>
-									<li>
-										<strong>Discount:</strong> 12.9%
-									</li>
-									<li>
-										<strong>VAT:</strong> -----
-									</li>
-									<li>
-										<strong>Grand Total:</strong> $12489
-									</li>
-								</ul>-->
-								
-								
-								
-								
-							</div>
-
-						</div>
-
+						<!-- END PAGE CONTENT INNER -->
 					</div>
-
 				</div>
-			</div>
-			<!-- END PAGE CONTENT INNER -->
-				<div class="col-xs-13" align="right">
-								<a class="btn btn-lg red hidden-print margin-bottom-8" onclick="javascript:redirect();">
-								Ver Recibo <i class="fa fa-print"></i>
-								</a>
-						</div>
-		</div>
-	</div>
-	<!-- END PAGE CONTENT -->
+				<!-- END PAGE CONTENT -->";
 
+			echo $html;
+			//exam_info($r,$field_visible);
+			echo $html2;
+			echo "<div class='saltopagina'></div>";
+	}
+//}
+?>
 
 			
 			<!-- BEGIN POPOVERS PORTLET-->			
@@ -797,12 +825,17 @@ function writeInfo(exa_id){
           }
        });
     }
-function redirect(){
-
-    	pagina = "candidate_receipt_individual.php";
+function redirect(exa_id, use_usertype){
+    if (use_usertype==1 | use_usertype==0){
+    	pagina = "candidate_table_admin.php?exa_id="+ exa_id;
     	setTimeout(redireccionar, 100, pagina);
-}
- 
+        }
+	
+    if (use_usertype==2){
+    	pagina = "candidate_table.php?exa_id="+ exa_id;
+    	setTimeout(redireccionar, 100, pagina);
+        }
+}    
 
 function redireccionar(pagina) {
     	{

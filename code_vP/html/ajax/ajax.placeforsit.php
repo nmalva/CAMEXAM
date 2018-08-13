@@ -63,6 +63,7 @@ if ($_SESSION["use_usertype"]!=1)
                 <li class='list-group-item'> Date Exam: <a href='candidate_table_admin_warnings.php?date={$exam_info["exa_date"]}'> {$class_utiles->fecha_mysql_php($exam_info["exa_date"])}</a></li>
                 <li class='list-group-item'> View Candidate Schedules: <a href='exam_info_all.php?exa_id={$get_exa_id}'> Schedules </a></li>
                 <li class='list-group-item' style='display:{$field_visible["schedule_admin"]};'> View Candidate Schedules Admin: <a href='exam_info_all_admin.php?exa_id={$get_exa_id}'> Schedules </a></li>
+                <li class='list-group-item' style='display:{$field_visible["schedule_admin"]};'> View Candidate Receipts Admin: <a href='candidate_receipt.php?exa_id={$get_exa_id}'> Receipts </a></li>
             </ul>
         </div>
         ";

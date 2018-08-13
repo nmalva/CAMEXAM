@@ -33,6 +33,9 @@ $campos["can_comment"]=$_POST["can_comment"]; // it is used to update comment ca
 $campos["can_commentadmin"]=$_POST["can_commentadmin"]; // it is used to update comment admin.
 $campos["can_candidatenum"]=$_POST["can_candidatenum"];
 $campos["can_packingcode"]=$_POST["can_packingcode"];
+$campos["can_receipt"]=$_POST["can_receipt"];
+$campos["can_ammount"]=$_POST["can_ammount"];
+$campos["can_receiptnumber"]=$_POST["can_receiptnumber"];
 // this is use v19 for the change o f Prc_id administrator
 if ($campos["prc_id"]==2)
    $campos["can_candidatetype"] =1;
@@ -50,6 +53,12 @@ elseif ($campos["can_candidatenum"]!=NULL)
     updateCandidatenum($campos);
 elseif ($campos["can_packingcode"]!=NULL)
     updatePackingcode($campos);
+elseif ($campos["can_receipt"]!=NULL)
+    updateReceipt($campos);
+elseif ($campos["can_ammount"]!=NULL)
+    updateAmmount($campos);
+elseif ($campos["can_receiptnumber"]!=NULL)
+    updateReceiptnumber($campos);
 else
     insertUpdate($campos, $session_use_usertype);
 
@@ -78,6 +87,21 @@ function updateCommentadmin($campos){
 function updateStatus($campos){
     $class_candidate= new Candidate($campos["can_id"]);
     $class_candidate->setCan_status($campos["can_status"]);
+  
+}
+function updateReceipt($campos){
+    $class_candidate= new Candidate($campos["can_id"]);
+    $class_candidate->setCan_receipt($campos["can_receipt"]);
+  
+}
+function updateAmmount($campos){
+    $class_candidate= new Candidate($campos["can_id"]);
+    $class_candidate->setCan_ammount($campos["can_ammount"]);
+  
+}
+function updateReceiptnumber($campos){
+    $class_candidate= new Candidate($campos["can_id"]);
+    $class_candidate->setCan_receiptnumber($campos["can_receiptnumber"]);
   
 }
 
