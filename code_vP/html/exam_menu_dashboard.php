@@ -175,7 +175,7 @@ function getDates($exams, $session_use_usetype, $year){
 	
 							 <ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>
 							 	General
-								<ul><li data-jstree='{ \"icon\" : \"fa fa-file icon-state-success\" }' ondblclick='redireccionar("dashboard_interanual.php?");'> Interanual </a> </li></ul>
+								<ul><li data-jstree='{ \"icon\" : \"fa fa-file icon-state-success\" }' onclick='redireccionar("dashboard_interanual.php?");'> Interanual </a> </li></ul>
 							 </li></ul>                        
 							</div>
 						</div>

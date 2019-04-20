@@ -92,6 +92,10 @@ function updateStatus($campos){
 function updateReceipt($campos){
     $class_candidate= new Candidate($campos["can_id"]);
     $class_candidate->setCan_receipt($campos["can_receipt"]);
+    if ($campos["can_receipt"]==1 OR $campos["can_receipt"]==2){
+        $nro_recibo = ultimo_nro_recibo()+1;
+        updateReceiptnumber_ult_nro($nro_recibo, $campos["can_id"]);
+    }
   
 }
 function updateAmmount($campos){
@@ -104,6 +108,13 @@ function updateReceiptnumber($campos){
     $class_candidate->setCan_receiptnumber($campos["can_receiptnumber"]);
   
 }
+function updateReceiptnumber_ult_nro($nro_recibo, $can_id){
+    $class_candidate= new Candidate($can_id);
+    $class_candidate->setCan_receiptnumber($nro_recibo);
+    echo "Receipt Number = " . $nro_recibo;
+  
+}
+
 
 function insertUpdate($campos, $session_use_usertype){
     if ($campos["can_id"]==""){
@@ -194,6 +205,16 @@ function checkdni($campos){
     return ($exist);
 }
 
+function ultimo_nro_recibo(){
+    $class_bd=new bd();
+    $sql="SELECT can_receiptnumber FROM Candidate ORDER BY can_receiptnumber DESC Limit 1";
+    $resultado = $class_bd ->ejecutar($sql);
+    $r=$class_bd->retornar_fila($resultado);
+
+    return ($r["can_receiptnumber"]);
+
+}
+
 
 /*
 $campos["can_dni"]="32204488";
@@ -214,4 +235,5 @@ $campos["prc_id"]="3";
 $campos["can_candidatenum"]="5000";
 $campos["can_packingcode"]="10";
 */
+
 ?>

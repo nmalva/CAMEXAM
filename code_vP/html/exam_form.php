@@ -317,7 +317,7 @@ while ($r = $class_bd->retornar_fila($resultado)) {
 											</label> 
 										    <label class="radio-inline"> <input type="radio"
 												name="exa_status" value="3"
-												<?php if ($exa_status==3) echo "checked";?>> Opened + Schedule
+												<?php if ($exa_status==3) echo "checked";?>> Closed + Schedule
 											</label>
 											<label class="radio-inline"> <input type="radio"
 												name="exa_status" value="2"

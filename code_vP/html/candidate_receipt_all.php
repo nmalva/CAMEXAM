@@ -1,5 +1,6 @@
 
 <?php include ("includes/title.php");?>
+<?php include ("includes/security_session.php");?>
 <?php //include ("includes/security_session.php");?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,6 +27,7 @@
 <?php 
 include_once("../classes/class.bd.php");
 include_once("../classes/class.utiles.php");
+include_once("../classes/class.numeroaletra.php");
 ?>
 <!--  END INCLUDE CLASSES -->
 
@@ -82,7 +84,8 @@ function get_candidate($exa_id, $prc_id){
 	    LEFT JOIN ExamPlaceAula on Candidate.epa_id=ExamPlaceAula.epa_id
 	    LEFT JOIN ExamPlace on Candidate.exp_id=ExamPlace.exp_id
 	    LEFT JOIN Exam on Candidate.exa_id=Exam.exa_id
-    	WHERE Exam.exa_id = {$exa_id} and Candidate.prc_id = {$prc_id}
+    	WHERE Exam.exa_id = {$exa_id}
+    	AND (Candidate.can_receipt = 1 OR Candidate.can_receipt = 2)
     	ORDER BY can_id ASC";
     $resultado = $class_bd->ejecutar($sql);
  //   $r=$class_bd->retornar_fila($resultado);
@@ -300,7 +303,7 @@ function place_info($r){
     echo "<b> Tu aula es: </b> {$r['epa_name']}";
     
 }
- 
+
 function get_examStatus($get_exa_id){
     $class_bd=new bd();
     $sql="SELECT * FROM Exam WHERE exa_id = {$get_exa_id}"; 
@@ -309,6 +312,8 @@ function get_examStatus($get_exa_id){
 
     return($r["exa_status"]);	
 }
+  
+
     
 ?>
 <!--  END PHP FUNCTIONS -->
@@ -338,6 +343,12 @@ function get_examStatus($get_exa_id){
 <!-- END PAGE LEVEL STYLES -->
 <!-- BEGIN THEME STYLES -->
 <?php include ("includes/themestyle.html")?>
+
+<?php 
+
+
+?>
+
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="favicon.ico"/>
 </head>
@@ -560,15 +571,31 @@ function get_examStatus($get_exa_id){
 $resultado = get_candidate($get_exa_id, $prc_id);
 //print_r($resultado);
 $class_bd1 = new bd();
+$class_numeroaletra = new NumeroALetras();
 
-
-$exam_status=get_examStatus($get_exa_id);
-if($exam_status=3){
-//	echo"Este Examen no cuenta aún con los horarios cargados o el mismo no se encuentra disponible";
-//}else{
+/*$exam_status=get_examStatus($get_exa_id);
+if($exam_status!=3){
+	echo"Este Examen no cuenta aún con los horarios cargados o el mismo no se encuentra disponible";
+}else{
+*/
 	while ($r = $class_bd1->retornar_fila($resultado)) {
 
+			if($r["can_receipt"]==1){ 
+				$encabezado = " Total Moneda Extranjera (USD)";
+				$moneda1 = "USD";
+				$moneda_texto = "DOLARES";
+			}
+			elseif ($r["can_receipt"]==2){
+				$encabezado = " Total Pesos ($)";
+				$moneda1 = "$"; 
+				$moneda_texto = "PESOS";
+			}
+
 			$field_visible = field_visible($r["exa_id"]);
+			$ammount = $r["can_ammount"];
+			$ammount_letras = $class_numeroaletra-> convertir($ammount, $moneda = $moneda_texto, $centimos = 'Centimos');
+
+
 			$html ="
 				<!-- BEGIN PAGE CONTENT -->
 				<div class='page-content'>
@@ -614,80 +641,95 @@ if($exam_status=3){
 							<div class='portlet-body'>
 								<div class='invoice'>
 									<div class='row invoice-logo'>
-										<div class='col-xs-3 invoice-logo-space'>
+							
 
-											<img src='../../assets/admin/layout3/img/logo-academia-5.jpg' class='img-responsive' alt=''/>
-											 <br/>
-										
+										<div class='col-xs-2'>	
+											<br/>
+											<img src='../../config/imgs/logo_recibo.jpg' class='img-responsive' alt=''/>	 
 										</div>
-										<div class='col-xs-9'>
-											<p>".
 
-												#RECIBO: 
+										<div class='col-xs-4'>	
 
-												  $r["can_firstname"]. " " . $r["can_lastname"]. 
-												 "<span class='muted'><strong>DNI: </strong>".$r["can_dni"]." - <strong>Fecha de Nacimiento: </strong>". $class_utiles->fecha_mysql_php($r["can_datebirth"])."</span>
-												 <span class='muted'><strong>Número de Candidato: </strong>".$r["can_candidatenum"]. " - <strong>Examen: </strong>".type_exam($r["tye_id"])."</span>
-												
-											</p>
+												<br/> 
+												 <span class='muted'>
+													 <strong>ACADEMIA ARGÜELLO S.A.</strong> <br/>
+												 </span>
+												  <span class='muted'>
+													 <strong>Dir:</strong> Av. Rafael Nuñez 5675<br/>
+													 <strong>Tel:</strong> 03543-420387<br/>
+												 </span>
+												  <span class='muted'>
+													 <strong>CUIT:</strong> 30 64655334-9 
+												 </span>
+												 
+										</div>
+										<div class='col-xs-5'>	
+												<br/> 
+													 <strong>UNIVERSIDAD DE CAMBRIDGE </strong> <br/>
+												 </span>
+												  <span class='muted'>
+													<strong>Centre:</strong> AR612 <br/>
+													 ACADEMIA ARGÜELLO - Córdoba <br/>
+
+												 </span>
+												   <span class='muted'>
+													 <strong>Dir:</strong> Ave. Rafael Nuñez 5675  <br/>
+													 <strong>Tel:</strong> 03543-420387 <br/>
+												 </span><br/>
+												 <span class='muted'>
+													 Por cuenta y orden de la universidad de Cambridge
+												 </span>
+												 
 										</div>
 									</div>
 									<hr/>
-									<h3>Horario de Examen:</h3>
+									<h3>Original Recibo #: {$r["can_receiptnumber"]} </h3>
+									<h4> {$r["can_firstname"]} {$r["can_lastname"]}  -  DNI {$r["can_dni"]}</h4>
+			
 									<div class='row'>
 										<div class='col-xs-12'>
 											<table class='table table-striped table-bordered table-hover'
-												id='sample_examinfo'>
+												id='sample_6'>
 											<thead>
 											<tr>
 												<th>
-													 Examen
+													 Descripción
 												</th>
 												<th>
-													 Horario
+													".
+													$encabezado 
+													 ."
 												</th>
-												<th >
-													 Fecha
-												</th>
-												<th >
-													 Lugar
-												</th>
-												<th >
-													 Dirección
-												</th>
-												<th >
-													 Aula
+												<th>".
+													 $encabezado
+													 ."
 												</th>
 											</tr>
 											</thead>
-											<tbody>";
+											<tbody>
+											<tr>
+												<td>".type_exam($r["tye_id"])."</td>
+												<td>{$moneda1} {$r["can_ammount"]}</td>
+												<td>{$ammount_letras}</td>
+
+											</tr>	
+
+											";
 
 			$html2 = "																	
 											</tbody>
 											</table>
 										</div>
 									</div>
-								    <div class='row'>
-										<div class='col-xs-12'>
-									     <ul class='well'>
-											 Haciendo click en <a href='documents/notice_adolescentes_adultos.pdf'>'Notice to candidates Exámenes para adolescentes y adultos'</a> podrá visualizar el documento. Haciendo click en <a href='documents/flyer.pdf'>'Starters -  Movers - Flyers en castellano'</a> podrá visualizar el documento. Por favor leer en detalle y ante cualquier consulta, comuníquense con nosotros con antelación.
-										 </ul>
-										</div>
-									</div>
-									<div class='row'>
-										<div class='col-xs-12'>
-											<ul class='well'>
-												<strong>Consideraciones</strong><br/>
-													Los alumnos deben presentarse 30 minutos antes del examen con su DNI o pasaporte (ORIGINAL Y VÁLIDO), lápiz, goma,lapicera y este horario ** Los teléfonos celulares, relojes y dispositivos electrónicos están ABSOLUTAMENTE PROHIBIDOS EN TODO MOMENTO Y LUGAR, incluso en salas de espera y recreos. No nos responsabilizamos por estos dispositivos.
-											</ul>
-										</div>
-									</div>
+								    <br/><br/><br/><br/>
 									<div class='row'>
 										<div class='col-xs-6'>
-											<img src='../../assets/admin/layout3/img/logo-academia-7.jpg' alt='logo' >
+											<img src='../../config/imgs/firma2.png' alt='logo' >
 										</div>
+										<br/><br/>
 										<div class='col-xs-6'>
 											<div class='well'>
+
 												<address>
 												<strong>Contacto</strong><br/>
 													Eugenia Obrist: 03543 443030/0351 153450614 / admin.cambridge@aa.edu.ar
@@ -727,12 +769,11 @@ if($exam_status=3){
 				<!-- END PAGE CONTENT -->";
 
 			echo $html;
-			exam_info($r,$field_visible);
+			//exam_info($r,$field_visible);
 			echo $html2;
 			echo "<div class='saltopagina'></div>";
 	}
-}
-
+//}
 ?>
 
 			

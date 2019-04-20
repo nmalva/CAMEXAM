@@ -89,11 +89,14 @@ function write_candidate($session_prc_id, $get_exa_id){
 
   		 $checked_0="";
          $checked_1="";
+         $checked_2="";
 
-         if ($r["can_receipt"]==0) //Not Sent
+         if ($r["can_receipt"]==0) //Not generated
              $checked_0="selected";
-         if ($r["can_receipt"]==1) // Sent
+         if ($r["can_receipt"]==1) // USD
              $checked_1="selected";
+         if ($r["can_receipt"]==2) // $
+             $checked_2="selected";
           
          
          if ($r["can_paymentfile"]!=""){$can_paymentfile="Y";}else{$can_paymentfile="N";}
@@ -129,8 +132,9 @@ function write_candidate($session_prc_id, $get_exa_id){
 
 	          $line.="<td style='text-align: center;'>           
 	         		<select onchange='updateReceipt({$r["can_id"]}, this.value);'>
-	    				<option  name='{$r["can_id"]}' value='0' {$checked_0} > Receipt not Generated </option>
-	                    <option  name='{$r["can_id"]}' value='1' {$checked_1} > Receipt Generated </option> 
+	    				<option  name='{$r["can_id"]}' value='0' {$checked_0} > Not Generated </option>
+	                    <option  name='{$r["can_id"]}' value='1' {$checked_1} > Generated - USD</option> 
+	                    <option  name='{$r["can_id"]}' value='2' {$checked_2} > Generated - PESOS</option> 
 	    			</select>	
 	    			<img alt='loading' src='../../assets/admin/layout3/img/loading-spinner-blue.gif' id='update_check' style='display:none;'>
 	         </td>";
@@ -328,7 +332,7 @@ function write_candidate($session_prc_id, $get_exa_id){
 												if ($session_use_usertype ==1){
 												echo
 													"<th>Receipt</th>
-													<th>USD Ammount</th>
+													<th>Receipt Ammount</th>
 													<th>Receipt Number</th>";
 												}
 											?>
@@ -462,14 +466,31 @@ function hideUpdateCheck(){
 
 function updateReceipt(can_id, can_receipt){
 	//showUpdateCheck();
-	$.ajax({
-        url:"../abm/abm.candidate.php",
-        type: "POST",
-        data:{can_id:can_id, can_receipt:can_receipt}, 
-        success: function(opciones){ 
-        	//hideUpdateCheck();				
-          }
-       });
+	if (can_receipt== 1 || can_receipt==2){
+		mensaje =	"You are generating a new receipt increasing the receipt number. Are you sure?";
+		confirmar=confirm(mensaje); 
+			if (confirmar) {
+				$.ajax({
+			        url:"../abm/abm.candidate.php",
+			        type: "POST",
+			        data:{can_id:can_id, can_receipt:can_receipt}, 
+			        success: function(opciones){ 
+			        	alert (opciones);			
+			          }
+			       });
+			}
+	}else{
+			alert ("the number of receipt will not be deleted")
+			$.ajax({
+	        url:"../abm/abm.candidate.php",
+	        type: "POST",
+	        data:{can_id:can_id, can_receipt:can_receipt}, 
+	        success: function(opciones){ 
+	        	//hideUpdateCheck();				
+	          }
+	       });
+
+	}
 }
 function updateAmmount(can_id, can_ammount){
 	//showUpdateCheck();
@@ -493,7 +514,8 @@ function updateReceiptNumber(can_id, can_receiptnumber){
             type: "POST",
             data:{can_id:can_id, can_receiptnumber:can_receiptnumber}, 
             success: function(opciones){ 
-         	  
+         	 
+
               }
            });
 	}

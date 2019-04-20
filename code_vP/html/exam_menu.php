@@ -58,9 +58,9 @@ function getDates($exams, $session_use_usetype, $year){
     $resultado = $class_bd->ejecutar($sql);
     While ($r=$class_bd->retornar_fila($resultado)){
         if ($r["exa_status"]=='1') // if the exam is opened (NM)
-            $stringPrint.="<ul><li data-jstree='{ \"icon\" : \"fa fa-file icon-state-success\" }' onclick='writeInfo({$r["exa_id"]})' ondblclick='redirect({$r["exa_id"]},{$session_use_usetype});'>";
+            $stringPrint.="<ul><li data-jstree='{ \"icon\" : \"fa fa-file icon-state-success\" }' onmouseover='writeInfo({$r["exa_id"]})' onclick='redirect({$r["exa_id"]},{$session_use_usetype});'>". "+";
         else                       // if the exam is closed (NM)
-            $stringPrint.="<ul><li data-jstree='{ \"icon\" : \"fa fa-file icon-state-danger\" }' onclick='writeInfo({$r["exa_id"]})' ondblclick='redirect({$r["exa_id"]},{$session_use_usetype});'>";
+            $stringPrint.="<ul><li data-jstree='{ \"icon\" : \"fa fa-file icon-state-danger\" }' onmouseover='writeInfo({$r["exa_id"]})' onclick='redirect({$r["exa_id"]},{$session_use_usetype});'>";
 
         $stringPrint.=$class_utiles->fecha_mysql_php_format($r["exa_date"]);
         $stringPrint.="</li></ul>";
@@ -179,11 +179,13 @@ function getDates($exams, $session_use_usetype, $year){
 							 $stringExams1=getStringExams("2016", $session_use_usetype);
 							 $stringExams2=getStringExams("2017", $session_use_usetype);
 							 $stringExams3=getStringExams("2018", $session_use_usetype);
+							 $stringExams4=getStringExams("2019", $session_use_usetype);
 
 							 echo "<ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>2015{$stringExams}</li></ul>";
 							 echo "<ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>2016{$stringExams1}</li></ul>";
 							 echo "<ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>2017{$stringExams2}</li></ul>";
-							  echo "<ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>2018{$stringExams3}</li></ul>";
+							 echo "<ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>2018{$stringExams3}</li></ul>";
+							 echo "<ul><li data-jstree='{ \"icon\" : \"fa fa-folder icon-state-success\"}'>2019{$stringExams4}</li></ul>";
 							 //echo "Para escapar caracteres se hace \"as�\".";							 
 							 ?>                          
 							</div>

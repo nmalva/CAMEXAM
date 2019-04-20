@@ -578,9 +578,20 @@ if($exam_status!=3){
 */
 	while ($r = $class_bd1->retornar_fila($resultado)) {
 
+			if($r["can_receipt"]==1){ 
+				$encabezado = " Total Moneda Extranjera (USD)";
+				$moneda1 = "USD";
+				$moneda_texto = "DOLARES";
+			}
+			elseif ($r["can_receipt"]==2){
+				$encabezado = " Total Pesos ($)";
+				$moneda1 = "$"; 
+				$moneda_texto = "PESOS";
+			}
+
 			$field_visible = field_visible($r["exa_id"]);
 			$ammount = $r["can_ammount"];
-			$ammount_letras = $class_numeroaletra-> convertir($ammount, $moneda = 'Dolares', $centimos = 'Centimos');
+			$ammount_letras = $class_numeroaletra-> convertir($ammount, $moneda = $moneda_texto, $centimos = 'Centimos');
 			$html ="
 				<!-- BEGIN PAGE CONTENT -->
 				<div class='page-content'>
@@ -630,40 +641,40 @@ if($exam_status!=3){
 
 										<div class='col-xs-2'>	
 											<br/>
-											<img src='../../assets/admin/layout3/img/logo-academia-5.jpg' class='img-responsive' alt=''/>	 
+											<img src='../../config/imgs/logo_recibo.jpg' class='img-responsive' alt=''/> 
 										</div>
 
 										<div class='col-xs-4'>	
 
 												<br/> 
 												 <span class='muted'>
-													 <strong>ACADEMIA ARGUERLLO S.A.</strong> 
+													 <strong>ACADEMIA ARGÜELLO S.A.</strong> <br/>
 												 </span>
 												  <span class='muted'>
-													 <strong>Dir:</strong> Ave. Rafael Nuñes 5675 
-													 <strong>Tel:</strong> 03543-420387
+													 <strong>Dir:</strong> Av. Rafael Nuñez 5675<br/>
+													 <strong>Tel:</strong> 03543-420387<br/>
 												 </span>
 												  <span class='muted'>
-													 <strong>CUIT:</strong> 3064655334-9 
+													 <strong>CUIT:</strong> 30 64655334-9 
 												 </span>
 												 
 										</div>
 										<div class='col-xs-5'>	
 												<br/> 
-													 <strong>UNIVERSIDAD DE CABRIDGE</strong> 
+													 <strong>UNIVERSIDAD DE CAMBRIDGE </strong> <br/>
 												 </span>
 												  <span class='muted'>
-													 <strong>Centre:</strong> AR612 -  Córdoba 
+													<strong>Centre:</strong> AR612 <br/>
+													 ACADEMIA ARGÜELLO - Córdoba <br/>
 
 												 </span>
 												   <span class='muted'>
-													 <strong>Dir:</strong> Ave. Rafael Nuñes 5675 
-													 <strong>Tel:</strong> 03543-420387
+													 <strong>Dir:</strong> Ave. Rafael Nuñez 5675  <br/>
+													 <strong>Tel:</strong> 03543-420387 <br/>
 												 </span><br/>
 												 <span class='muted'>
 													 Por cuenta y orden de la universidad de Cambridge
-												 </span>
-												 
+												 </span> 
 										</div>
 									</div>
 									<hr/>
@@ -677,20 +688,23 @@ if($exam_status!=3){
 											<thead>
 											<tr>
 												<th>
-													 Descripcion
+													 Descripción
 												</th>
 												<th>
-													 Total Moneda Extranjera (USD) 
+													".
+													$encabezado 
+													 ."
 												</th>
-												<th>
-													 Total Moneda Extranjera (USD) 
+												<th>".
+													 $encabezado
+													 ."
 												</th>
 											</tr>
 											</thead>
 											<tbody>
 											<tr>
 												<td>".type_exam($r["tye_id"])."</td>
-												<td>USD {$r["can_ammount"]}</td>
+												<td>{$moneda1} {$r["can_ammount"]}</td>
 												<td>{$ammount_letras}</td>
 
 											</tr>	
@@ -705,7 +719,7 @@ if($exam_status!=3){
 								    <br/><br/><br/><br/>
 									<div class='row'>
 										<div class='col-xs-6'>
-											<img src='../../assets/admin/layout3/img/firma.png' alt='logo' >
+											<img src='../../config/imgs/firma2.png' alt='logo' >
 										</div>
 										<br/><br/>
 										<div class='col-xs-6'>

@@ -301,7 +301,7 @@ jQuery(document).ready(function() {
 
 //--START JAVASCRIPT FUNCTIONS--
 function redirect(can_id, exa_status, can_status){
-	if (exa_status==2){ 	// if is it closed (NM)
+	if (exa_status==2 || exa_status==3){ 	// if is it closed (NM)
 	    alert ("this exam is closed and you can not modify the information");
 		}
 	else{
